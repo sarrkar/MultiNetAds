@@ -72,9 +72,17 @@ func main() {
 
 	router := gin.Default()
 	router.GET("/", func(c *gin.Context) {
-		// c.Data(http.StatusOK, "text/html; charset=utf-8", []byte("service is up!"))
 		c.IndentedJSON(http.StatusOK, gin.H{
-			"ad": AdResponse{
+			"status": "OK",
+			"code":   200,
+		})
+	})
+
+	router.GET("/api/ad", func(c *gin.Context) {
+		c.IndentedJSON(http.StatusOK, gin.H{
+			"status": "OK",
+			"code":   200,
+			"data": AdResponse{
 				Title:         res.Ads[0].Title,
 				ImageUrl:      res.Ads[0].ImageUrl,
 				ImpressionUrl: fmt.Sprintf("eventserver.local/impression/%d/%s", res.Ads[0].ID, randStr(10)),

@@ -18,7 +18,9 @@ expected endpoints:
     * `res`: json:
     ```json
     {
-        "ads": [
+        "status": "OK",
+		"code":   200,
+        "data": [
             {
                 "ID": 12,
                 "Title": "title1",
@@ -41,7 +43,9 @@ in go:
 
 ```go
 c.IndentedJSON(http.StatusOK, gin.H{
-    "ads": []Ad{
+        "status": "OK",
+        "code":   200,
+        "data": AdResponse{
         {12, "title1", "image.storage/media/image12.jpg", 100},
         {14, "title2", "image.storage/media/image14.jpg", 150},
     },
