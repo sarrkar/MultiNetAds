@@ -14,7 +14,7 @@ endpoints:
 
 
 expected endpoints:
-+ `POST`: `panel.local/api/ads` 
++ `GEt`: `panel.local/api/ads` 
     * `res`: json:
     ```json
     {
