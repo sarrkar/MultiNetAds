@@ -37,7 +37,7 @@ func randStr(length int) string {
 }
 
 func main() {
-	// resp, err := http.Get("https://gobyexample.com")
+	// resp, err := http.Get("panel.local/api/ads")
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
@@ -46,7 +46,6 @@ func main() {
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
-	// fmt.Println(string(b))
 
 	jsonTest := `
 {
