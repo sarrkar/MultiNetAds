@@ -21,10 +21,10 @@ type Ad struct {
 }
 
 type AdResponse struct {
-	Title         string
-	ImageUrl      string
-	ImpressionUrl string
-	ClickUrl      string
+	Title         string `json:"title"`
+	ImageUrl      string `json:"image_url"`
+	ImpressionUrl string `json:"impression_event"`
+	ClickUrl      string `json:"click_event"`
 }
 
 func randStr(length int) string {
@@ -78,16 +78,14 @@ func main() {
 	})
 
 	router.GET("/api/ad", func(c *gin.Context) {
-		c.IndentedJSON(http.StatusOK, gin.H{
-			"status": "OK",
-			"code":   200,
-			"data": AdResponse{
-				Title:         res.Ads[0].Title,
-				ImageUrl:      res.Ads[0].ImageUrl,
-				ImpressionUrl: fmt.Sprintf("eventserver.local/impression/%d/%s", res.Ads[0].ID, randStr(10)),
-				ClickUrl:      fmt.Sprintf("eventserver.local/click/%d/%s", res.Ads[0].ID, randStr(10)),
-			},
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.IndentedJSON(http.StatusOK, AdResponse{
+			Title:         res.Ads[0].Title,
+			ImageUrl:      res.Ads[0].ImageUrl,
+			ImpressionUrl: fmt.Sprintf("eventserver.local/impression/%d/%s", res.Ads[0].ID, randStr(10)),
+			ClickUrl:      fmt.Sprintf("eventserver.local/click/%d/%s", res.Ads[0].ID, randStr(10)),
 		})
 	})
-	router.Run(":8080")
+
+	router.Run(":8000")
 }
