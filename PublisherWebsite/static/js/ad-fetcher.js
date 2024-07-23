@@ -25,7 +25,7 @@
 // });
 
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('/api/ad')
+    fetch('http://localhost:8000/api/ad')
         .then(response => response.json())
         .then(data => {
             document.getElementById('ad-title').textContent = data.title;
