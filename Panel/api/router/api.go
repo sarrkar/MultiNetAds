@@ -3,10 +3,9 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sarrkar/Chan-ta-net/Panel/api/controller"
-	"github.com/sarrkar/Chan-ta-net/Panel/config"
 )
 
-func Ad(r *gin.RouterGroup, cfg *config.Config) {
+func Ad(r *gin.RouterGroup) {
 	ctrl := controller.NewAdController()
 
 	r.POST("/", ctrl.Create)

@@ -1,16 +1,16 @@
 package config
 
-type Config struct {
-	Server   ServerConfig
-	Postgres PostgresConfig
+type config struct {
+	Server   serverConfig
+	Postgres postgresConfig
 }
 
-type ServerConfig struct {
+type serverConfig struct {
 	Port    string
 	RunMode string
 }
 
-type PostgresConfig struct {
+type postgresConfig struct {
 	Host     string
 	Port     string
 	User     string
@@ -19,19 +19,23 @@ type PostgresConfig struct {
 	TimeZone string
 }
 
-func GetConfig() *Config {
-	cfg := &Config{
-		Server: ServerConfig{
-			Port:    "8080",
-			RunMode: "debug",
-		},
-		Postgres: PostgresConfig{
-			Host:     "localhost",
-			Port:     "5432",
-			User:     "postgres",
-			Password: "postgres",
-			DbName:   "test",
-		},
+var cfg *config
+
+func Config() *config {
+	if cfg == nil {
+		cfg = &config{
+			Server: serverConfig{
+				Port:    "8080",
+				RunMode: "debug",
+			},
+			Postgres: postgresConfig{
+				Host:     "localhost",
+				Port:     "5432",
+				User:     "admin",
+				Password: "12345678",
+				DbName:   "test",
+			},
+		}
 	}
 
 	return cfg
