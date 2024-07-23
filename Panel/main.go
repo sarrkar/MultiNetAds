@@ -1,5 +1,9 @@
 package main
 
+import (
+	"github.com/sarrkar/chan-ta-net/Panel/api"
+)
+
 func main() {
 
 	//err := database.InitDb()
@@ -8,5 +12,5 @@ func main() {
 	//	log.Fatalln(err)
 	//}
 
-	//api.InitServer()
+	api.InitServer()
 }
