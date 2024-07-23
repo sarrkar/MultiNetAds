@@ -9,28 +9,28 @@ import (
 	"github.com/sarrkar/Chan-ta-net/Panel/config"
 )
 
-func InitServer(cfg *config.Config) {
-	gin.SetMode(cfg.Server.RunMode)
+func InitServer() {
+	gin.SetMode(config.Config().Server.RunMode)
 	r := gin.New()
 
-	RegisterRoutes(r, cfg)
+	RegisterRoutes(r)
 
-	err := r.Run(fmt.Sprintf(":%s", cfg.Server.Port))
+	err := r.Run(fmt.Sprintf(":%s", config.Config().Server.Port))
 	if err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func RegisterRoutes(r *gin.Engine, cfg *config.Config) {
+func RegisterRoutes(r *gin.Engine) {
 	adv := r.Group("/advertiser")
 	{
 		advAds := adv.Group("/ad")
 		advReport := adv.Group("/report")
 		advFinance := adv.Group("/finance")
 
-		router.AdvertiserAd(advAds, cfg)
-		router.AdvertiserReport(advReport, cfg)
-		router.AdvertiserFinance(advFinance, cfg)
+		router.AdvertiserAd(advAds)
+		router.AdvertiserReport(advReport)
+		router.AdvertiserFinance(advFinance)
 	}
 
 	pub := r.Group("/publisher")
@@ -39,16 +39,16 @@ func RegisterRoutes(r *gin.Engine, cfg *config.Config) {
 		pubReport := pub.Group("/report")
 		pubFinance := pub.Group("/finance")
 
-		router.PublisherPlace(pubPlace, cfg)
-		router.PublisherReport(pubReport, cfg)
-		router.PublisherFinance(pubFinance, cfg)
+		router.PublisherPlace(pubPlace)
+		router.PublisherReport(pubReport)
+		router.PublisherFinance(pubFinance)
 	}
 
 	api := r.Group("/api")
 	{
 		Ad := api.Group("/ad")
 
-		router.Ad(Ad, cfg)
+		router.Ad(Ad)
 	}
 
 }

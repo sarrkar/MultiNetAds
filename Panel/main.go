@@ -4,18 +4,16 @@ import (
 	"log"
 
 	"github.com/sarrkar/Chan-ta-net/Panel/api"
-	"github.com/sarrkar/Chan-ta-net/Panel/config"
 	"github.com/sarrkar/Chan-ta-net/Panel/database"
 )
 
 func main() {
-	cfg := config.GetConfig()
 
-	err := database.InitDb(cfg)
+	err := database.InitDb()
 	defer database.CloseDb()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	api.InitServer(cfg)
+	api.InitServer()
 }
