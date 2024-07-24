@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel</title>
+    <title>داشبورد کاربر</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,8 +18,9 @@
     </style>
 </head>
 <body>
-    <h1>Panel</h1>
-    <button onclick="location.href='/adver_sendname'">Advertiser</button>
-    <button onclick="location.href='/publisher'">Publisher</button>
+    <h1>خوش آمدید، {{.Name}}</h1>
+    <button onclick="location.href='{{.Name}}/my_ads'">تبلیغات من</button>
+    <button onclick="location.href='{{.Name}}/reports'">گزارشات</button>
+    <button onclick="location.href='{{.Name}}/financial-status'">وضعیت مالی</button>
 </body>
 </html>

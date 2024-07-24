@@ -35,15 +35,26 @@ func InitServer() {
 }
 
 func RegisterRoutes(r *gin.Engine) {
-	adv := r.Group("/advertiser")
+	adv := r.Group("/adver_sendname")
 	{
 		adv.GET("/", func(c *gin.Context) {
-			c.HTML(http.StatusOK, "advertiser.html", nil)
+			c.HTML(http.StatusOK, "adver_sendname.html", nil)
 		})
 
-		advAds := adv.Group("/my_ads")
-		advReport := adv.Group("/report")
-		advFinance := adv.Group("/finance")
+		adv.POST("/submit-name", func(c *gin.Context) {
+			name := c.PostForm("name")
+			c.Redirect(http.StatusFound, "/adver_sendname/"+name)
+		})
+		
+		adv.GET("/:name", func(c *gin.Context) {
+			
+			name := c.Param("name")
+			c.HTML(http.StatusOK, "adver_dashboard.html", gin.H{"Name": name})
+		})
+		
+		advAds := adv.Group("/:name/my_ads")
+		advReport := adv.Group("/:name/report")
+		advFinance := adv.Group("/:name/finance")
 
 		router.AdvertiserAd(advAds)
 		router.AdvertiserReport(advReport)

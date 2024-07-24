@@ -15,12 +15,12 @@ func AdvertiserAd(r *gin.RouterGroup) {
 	})
 
 	r.POST("/submit-advertisement", func(c *gin.Context) {
-		title := c.PostForm("title")
-		clickAmount := c.PostForm("click_amount")
-		description := c.PostForm("description")
+	//	title := c.PostForm("title")
+	//	clickAmount := c.PostForm("click_amount")
+	//	description := c.PostForm("description")
 
 		c.HTML(http.StatusOK, "submit-advertisement.html", gin.H{
-			"message": "تبلیغ با موفقیت اضافه شد!"+title+clickAmount+description,
+			"message": "تبلیغ با موفقیت اضافه شد!",
 		})
 	})
 
