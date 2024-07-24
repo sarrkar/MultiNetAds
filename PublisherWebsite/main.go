@@ -99,9 +99,9 @@ func main() {
 	router.GET("/api/ad", func(c *gin.Context) {
 		ad := map[string]string{
 			"title":            "This is a test ad from AdServer",
-			"image_url":        "https://example.com/path/to/ad-image.jpg",
-			"impression_event": "/api/impression",
-			"click_event":      "/api/click",
+			"image_url":        "http://localhost:8000/static/media/image12.jpg",
+			"impression_event": "http://localhost:8080/impression/12/Y0JVOH0BQb",
+			"click_event":      "http://localhost:8080/click/12/Y0JVOH0BQb",
 		}
 		c.JSON(http.StatusOK, ad)
 	})
@@ -144,7 +144,7 @@ func main() {
 		c.HTML(http.StatusOK, "template3.html", nil)
 	})
 
-	router.Run(":9000")
+	router.Run(":9001")
 }
 
 func sendEventToEventServer(event AdEvent) {
@@ -154,7 +154,7 @@ func sendEventToEventServer(event AdEvent) {
 		return
 	}
 
-	resp, err := http.Post("http://localhost:8082/api/events", "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post("http://localhost:8080/api/events", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Println("Error sending event to event server:", err)
 		return
