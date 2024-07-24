@@ -11,7 +11,9 @@ import (
 )
 
 func InitServer() {
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(config.Config().Server.RunMode)
+	//	r := gin.New()
+	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	r.LoadHTMLGlob("api/templates/*")
@@ -19,6 +21,10 @@ func InitServer() {
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
+
+	//	r.GET("/advertiser", func(c *gin.Context) {
+	//		c.HTML(http.StatusOK, "advertiser.html", nil)
+	//	})
 
 	RegisterRoutes(r)
 
@@ -35,7 +41,7 @@ func RegisterRoutes(r *gin.Engine) {
 			c.HTML(http.StatusOK, "advertiser.html", nil)
 		})
 
-		advAds := adv.Group("/ad")
+		advAds := adv.Group("/my_ads")
 		advReport := adv.Group("/report")
 		advFinance := adv.Group("/finance")
 

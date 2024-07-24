@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/sarrkar/Chan-ta-net/Panel/config"
+	"github.com/sarrkar/Chan-ta-net/Panel/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -27,8 +28,13 @@ func InitDb() error {
 	if err != nil {
 		return err
 	}
-
 	log.Println("Db connection established")
+
+	dbClient.AutoMigrate(&models.Ad{})
+	dbClient.AutoMigrate(&models.Advertiser{})
+	dbClient.AutoMigrate(&models.Publisher{})
+	log.Println("tables migrated")
+
 	return nil
 }
 
