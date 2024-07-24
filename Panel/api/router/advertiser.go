@@ -2,6 +2,7 @@ package router
 
 import (
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,22 +16,40 @@ func AdvertiserAd(r *gin.RouterGroup) {
 	})
 
 	r.POST("/submit-advertisement", func(c *gin.Context) {
-	//	title := c.PostForm("title")
-	//	clickAmount := c.PostForm("click_amount")
-	//	description := c.PostForm("description")
+		//	title := c.PostForm("title")
+		//	clickAmount := c.PostForm("click_amount")
+		//	description := c.PostForm("description")
 
 		c.HTML(http.StatusOK, "submit-advertisement.html", gin.H{
 			"message": "تبلیغ با موفقیت اضافه شد!",
 		})
 	})
 
-
 }
 
 func AdvertiserReport(r *gin.RouterGroup) {
-	// TODO
+	
 }
 
 func AdvertiserFinance(r *gin.RouterGroup) {
-	// TODO
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "my_finance.html", nil)
+	})
+
+	r.GET("/balance", func(c *gin.Context) {
+		name := c.Param("name")
+		// should get connected to database
+		c.HTML(http.StatusOK, "balance.html", gin.H{"Name": name})
+	})
+
+	r.GET("/payment", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "payment.html", nil)
+	})
+
+	r.POST("/add-credit", func(c *gin.Context) {
+		amount := c.PostForm("amount")
+		// should get connected to database
+		c.String(200, amount + " done")
+	})
+
 }

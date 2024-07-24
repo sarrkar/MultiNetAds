@@ -53,8 +53,8 @@ func RegisterRoutes(r *gin.Engine) {
 		})
 
 		advAds := adv.Group("/:name/my_ads")
-		advReport := adv.Group("/:name/report")
-		advFinance := adv.Group("/:name/finance")
+		advReport := adv.Group("/:name/my_reports")
+		advFinance := adv.Group("/:name/my_finance")
 
 		router.AdvertiserAd(advAds)
 		router.AdvertiserReport(advReport)
