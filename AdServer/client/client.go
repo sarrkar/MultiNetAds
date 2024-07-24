@@ -37,7 +37,7 @@ func UpdateAdsCache() {
 
 	for {
 		mu.Lock()
-		resp, err := http.Get(config.Config().Client.Api)
+		resp, err := http.Get(config.Config().Client.PanelApi)
 		if err != nil {
 			log.Fatal(err)
 		}

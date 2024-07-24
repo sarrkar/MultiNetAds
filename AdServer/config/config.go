@@ -15,8 +15,8 @@ type serverConfig struct {
 }
 
 type clientConfig struct {
-	Api    string
-	Period time.Duration
+	PanelApi string
+	Period   time.Duration
 }
 
 var cfg *config
@@ -31,8 +31,8 @@ func Config() *config {
 				OTLlength:      10,
 			},
 			Client: clientConfig{
-				Api:    "http://localhost:8080/api/ad/all_ads",
-				Period: 1 * time.Minute,
+				PanelApi: "http://localhost:8080/api/ad/all_ads",
+				Period:   1 * time.Minute,
 			},
 		}
 	}
