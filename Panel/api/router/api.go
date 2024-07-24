@@ -8,8 +8,8 @@ import (
 func Ad(r *gin.RouterGroup) {
 	ctrl := controller.NewAdController()
 
-	r.POST("/", ctrl.Create)
-	r.GET("/:id", ctrl.GetById)
-	r.PUT("/:id", ctrl.Update)
-	r.DELETE("/:id", ctrl.Delete)
+	r.GET("/all_ads", ctrl.GetAds)
+	r.GET("/inc_impression/:id", ctrl.IncImpression)
+	r.GET("/inc_click/:id", ctrl.IncClick)
+	r.GET("/create_mock", ctrl.CreateMockData)
 }

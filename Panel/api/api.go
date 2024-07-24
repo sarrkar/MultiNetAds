@@ -11,7 +11,7 @@ import (
 )
 
 func InitServer() {
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(config.Config().Server.RunMode)
 	r := gin.Default()
 
 	r.LoadHTMLGlob("api/templates/*")
