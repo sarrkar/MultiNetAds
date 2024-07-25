@@ -38,7 +38,14 @@
 </body>
 </html> -->
 
-<!DOCTYPE html>
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -46,8 +53,7 @@
     <title>Ad Publisher</title>
 </head>
 <body>
-    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
+    <h1>Template 1</h1>
     <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
     <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
     <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
@@ -83,6 +89,108 @@
             adContainer.querySelector('a').addEventListener('click', () => {
                 registerClickEvent(ad.click_event);
             });
+        }
+
+        function registerImpressionEvent(impressionUrl) {
+            fetch(impressionUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event: 'impression'
+                })
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                console.log('Impression event registered successfully');
+            }).catch(error => {
+                console.error('Error registering impression event:', error);
+            });
+        }
+
+        function registerClickEvent(clickUrl) {
+            fetch(clickUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event: 'click'
+                })
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                console.log('Click event registered successfully');
+            }).catch(error => {
+                console.error('Error registering click event:', error);
+            });
+        }
+
+        // Fetch ad on page load
+        window.onload = fetchAd;
+    </script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Publisher</title>
+</head>
+<body>
+    <h1>Template 1</h1>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <div id="ad-container">
+        <!-- تبلیغ اینجا نمایش داده می‌شود -->
+    </div>
+
+    <script>
+        async function fetchAd() {
+            try {
+                const response = await fetch('http://localhost:9005/api/ad');
+                const ad = await response.json();
+                displayAd(ad);
+                observeAdImpression(ad.impression_event);
+            } catch (error) {
+                console.error('Error fetching ad:', error);
+            }
+        }
+
+        function displayAd(ad) {
+            const adContainer = document.getElementById('ad-container');
+            adContainer.innerHTML = `
+                <h2>${ad.title}</h2>
+                <a href="${ad.click_event}" target="_blank">
+                    <img src="${ad.image_url}" alt="${ad.title}">
+                </a>
+            `;
+            adContainer.querySelector('a').addEventListener('click', (e) => {
+                e.preventDefault();
+                registerClickEvent(ad.click_event);
+                window.open(ad.click_event, '_blank');
+            });
+        }
+
+        function observeAdImpression(impressionUrl) {
+            const adContainer = document.getElementById('ad-container');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        registerImpressionEvent(impressionUrl);
+                        observer.unobserve(adContainer);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(adContainer);
         }
 
         function registerImpressionEvent(impressionUrl) {
