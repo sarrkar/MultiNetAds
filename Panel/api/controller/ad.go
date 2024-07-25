@@ -2,15 +2,17 @@ package controller
 
 import (
 	"net/http"
+	"sync"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sarrkar/Chan-ta-net/Panel/database"
-	"github.com/sarrkar/Chan-ta-net/Panel/models"
+	"github.com/sarrkar/chan-ta-net/panel/database"
+	"github.com/sarrkar/chan-ta-net/panel/models"
 	"gorm.io/gorm"
 )
 
 type AdController struct {
 	DB *gorm.DB
+	mu sync.Mutex
 }
 
 func NewAdController() *AdController {
@@ -35,6 +37,8 @@ func (ctrl *AdController) IncImpression(ctx *gin.Context) {
 	id := ctx.Param("id")
 	var ad models.Ad
 
+	ctrl.mu.Lock()
+	defer ctrl.mu.Unlock()
 	if result := ctrl.DB.First(&ad, id); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
@@ -50,6 +54,8 @@ func (ctrl *AdController) IncClick(ctx *gin.Context) {
 	id := ctx.Param("id")
 	var ad models.Ad
 
+	ctrl.mu.Lock()
+	defer ctrl.mu.Unlock()
 	if result := ctrl.DB.First(&ad, id); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return

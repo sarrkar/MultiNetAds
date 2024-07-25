@@ -1,5 +1,7 @@
 package config
 
+import "os"
+
 type config struct {
 	Server   serverConfig
 	Postgres postgresConfig
@@ -29,11 +31,11 @@ func Config() *config {
 				RunMode: "debug",
 			},
 			Postgres: postgresConfig{
-				Host:     "localhost",
+				Host:     os.Getenv("POSTGRES_HOST"),
 				Port:     "5432",
-				User:     "admin",
-				Password: "12345678",
-				DbName:   "test",
+				User:     os.Getenv("POSTGRES_USER"),
+				Password: os.Getenv("POSTGRES_PASSWORD"),
+				DbName:   os.Getenv("POSTGRES_DB"),
 			},
 		}
 	}
