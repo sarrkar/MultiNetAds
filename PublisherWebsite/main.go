@@ -92,17 +92,33 @@ type AdEvent struct {
 func main() {
 	router := gin.Default()
 
+	// Middleware for CORS
+	router.Use(func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Authorization, Accept, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, PATCH")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	})
+
 	router.Static("/static", "./static")
 
 	router.LoadHTMLGlob("templates/*")
 
 	router.GET("/api/ad", func(c *gin.Context) {
 		ad := map[string]string{
-			"title":            "This is a test ad from AdServer",
-			"image_url":        "http://localhost:8000/static/media/image12.jpg",
+			"title":            "This is a test ad from AdServerrr",
+			"image_url":        "https://news-cdn.varzesh3.com/pictures/2024/07/24/C/coecuh4j.png?w=350",
 			"impression_event": "http://localhost:8080/impression/12/Y0JVOH0BQb",
 			"click_event":      "http://localhost:8080/click/12/Y0JVOH0BQb",
 		}
+		c.Header("Access-Control-Allow-Origin", "*")
 		c.JSON(http.StatusOK, ad)
 	})
 
@@ -144,7 +160,7 @@ func main() {
 		c.HTML(http.StatusOK, "template3.html", nil)
 	})
 
-	router.Run(":9001")
+	router.Run(":9005")
 }
 
 func sendEventToEventServer(event AdEvent) {
