@@ -31,7 +31,7 @@ services:
   event-server-webserver:
     build: "./EventServer"
     ports:
-      - 9002:8080
+      - 9002:7000
     depends_on:
       - panel-webserver
   publisher-site-webserver:
