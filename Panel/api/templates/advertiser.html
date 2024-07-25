@@ -31,6 +31,13 @@
 </head>
 <body>
     <h1>advertiser</h1>
+    <ul>
+        {{range .Advertisers}}
+        <li>
+            <a href="{{.ID}}">{{.Name}}</a>
+        </li>
+        {{end}}
+    </ul>
     <form action="submit-name" method="post">
         <label for="name">نام خود را وارد کنید:</label>
         <input type="text" id="name" name="name" required>

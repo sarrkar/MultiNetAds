@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اضافه کردن تبلیغ</title>
+    <title>مشاهده تبلیغ</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,23 +42,34 @@
     </style>
 </head>
 <body>
-    <h1>اضافه کردن تبلیغ</h1>
-    <form action="create" method="post">
-        <label for="title">عنوان تبلیغ:</label>
-        <input type="text" id="title" name="title" required>
-
-        <label for="click_amount">مبلغ پرداختی جهت هر کلیک:</label>
-        <input type="number" id="click_amount" name="click_amount" step="0.01" required>
-
-        <label for="referral_link">لینک ارجاع:</label>
-        <input type="url" id="referral_link" name="referral_link">
-
-        <label for="image_link">لینک تصویر:</label>
-        <input type="url" id="image_link" name="image_link">
-
-        <button type="submit">ارسال تبلیغ</button>
-    </form>
-    <br>
-    <a href="/">بازگشت به صفحه تبلیغ‌کننده</a>
+    <h1>مشاهده تبلیغ</h1>
+    <table>
+        <tr>
+            <td>عنوان</td>
+            <td>عکس</td>
+            <td>هزینه</td>
+            <td>بازدید</td>
+            <td>کلیک</td>
+        </tr>
+        {{range .Ads}}
+        <tr>
+            <td>
+                <a href="{{.RedirectUrl}}"><span>{{.Title}}</span></a>
+            </td>
+            <td>
+                <img src="{{.ImageUrl}}" width="200px" />
+            </td>
+            <td>
+                <span>{{.BID}} تومان</span>
+            </td>
+            <td>
+                <span>{{.Impression}}</span>
+            </td>
+            <td>
+                <span>{{.Click}}</span>
+            </td>
+        </tr>
+        {{end}}
+    </table>
 </body>
 </html>

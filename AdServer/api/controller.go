@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sarrkar/Chan-ta-net/AdServer/client"
-	"github.com/sarrkar/Chan-ta-net/AdServer/config"
-	"github.com/sarrkar/Chan-ta-net/AdServer/helper"
+	"github.com/sarrkar/chan-ta-net/ad-server/client"
+	"github.com/sarrkar/chan-ta-net/ad-server/config"
+	"github.com/sarrkar/chan-ta-net/ad-server/helper"
 )
 
 type AdResponse struct {

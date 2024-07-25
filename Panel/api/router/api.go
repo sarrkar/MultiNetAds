@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sarrkar/Chan-ta-net/Panel/api/controller"
+	"github.com/sarrkar/chan-ta-net/panel/api/controller"
 )
 
 func Ad(r *gin.RouterGroup) {

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sarrkar/Chan-ta-net/Panel/api/router"
-	"github.com/sarrkar/Chan-ta-net/Panel/config"
+	"github.com/sarrkar/chan-ta-net/panel/api/router"
+	"github.com/sarrkar/chan-ta-net/panel/config"
 )
 
 func InitServer() {
@@ -37,28 +37,7 @@ func InitServer() {
 func RegisterRoutes(r *gin.Engine) {
 	adv := r.Group("/advertiser")
 	{
-		adv.GET("/", func(c *gin.Context) {
-			c.HTML(http.StatusOK, "advertiser.html", nil)
-		})
-
-		adv.POST("/submit-name", func(c *gin.Context) {
-			name := c.PostForm("name")
-			c.Redirect(http.StatusFound, "/advertiser/"+name)
-		})
-		
-		adv.GET("/:name", func(c *gin.Context) {
-			
-			name := c.Param("name")
-			c.HTML(http.StatusOK, "adver_dashboard.html", gin.H{"Name": name})
-		})
-
-		advAds := adv.Group("/:name/my_ads")
-		advReport := adv.Group("/:name/my_reports")
-		advFinance := adv.Group("/:name/my_finance")
-
-		router.AdvertiserAd(advAds)
-		router.AdvertiserReport(advReport)
-		router.AdvertiserFinance(advFinance)
+		router.Advertiser(adv)
 	}
 
 	pub := r.Group("/publisher")
@@ -67,7 +46,7 @@ func RegisterRoutes(r *gin.Engine) {
 			c.HTML(http.StatusOK, "publisher.html", nil)
 		})
 
-		pubPlace := pub.Group("/Place")
+		pubPlace := pub.Group("/place")
 		pubReport := pub.Group("/report")
 		pubFinance := pub.Group("/finance")
 

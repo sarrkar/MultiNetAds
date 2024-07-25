@@ -27,11 +27,11 @@ func Config() *config {
 			Server: serverConfig{
 				Port:           "9000",
 				RunMode:        "debug",
-				EventSeverHost: "http://localhost:7000",
+				EventSeverHost: "http://event-server-webserver:7000",
 				OTLlength:      10,
 			},
 			Client: clientConfig{
-				PanelApi: "http://localhost:8080/api/ad/all_ads",
+				PanelApi: "http://panel-webserver:8080/api/ad/all_ads",
 				Period:   1 * time.Minute,
 			},
 		}

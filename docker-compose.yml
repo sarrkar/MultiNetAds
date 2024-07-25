@@ -1,13 +1,45 @@
 version: '3.9'
 
 services:
-  postgres:
-    image: postgres:14-alpine
+  panel-database:
+    image: postgres:latest
     ports:
-      - 5432:5432
+     - 5432:5432
     volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=12345678
-      - POSTGRES_USER=admin
-      - POSTGRES_DB=test
+      - POSTGRES_PASSWORD=Mam@d123
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=panel
+  panel-webserver:
+    build: "./Panel"
+    ports:
+      - 8080:8080
+    environment:
+      - POSTGRES_HOST=panel-database
+      - POSTGRES_PASSWORD=Mam@d123
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=panel
+    depends_on:
+      - panel-database
+  ad-server-webserver:
+    build: "./AdServer"
+    ports:
+      - 9000:9000
+    depends_on:
+      - panel-webserver
+  event-server-webserver:
+    build: "./EventServer"
+    ports:
+      - 9002:8080
+    depends_on:
+      - panel-webserver
+  publisher-site-webserver:
+    build: "./PublisherWebsite"
+    ports:
+      - 9001:9001
+    depends_on:
+      - panel-webserver
+
+volumes:
+  pgdata:

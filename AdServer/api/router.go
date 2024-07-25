@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sarrkar/Chan-ta-net/AdServer/config"
+	"github.com/sarrkar/chan-ta-net/ad-server/config"
 )
 
 func InitServer() {

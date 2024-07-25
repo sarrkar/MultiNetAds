@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sarrkar/Chan-ta-net/AdServer/config"
+	"github.com/sarrkar/chan-ta-net/ad-server/config"
 )
 
 type Ad struct {

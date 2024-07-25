@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/sarrkar/Chan-ta-net/AdServer/api"
-	"github.com/sarrkar/Chan-ta-net/AdServer/client"
+	"github.com/sarrkar/chan-ta-net/ad-server/api"
+	"github.com/sarrkar/chan-ta-net/ad-server/client"
 )
 
 func main() {

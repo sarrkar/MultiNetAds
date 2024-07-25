@@ -1,6 +1,6 @@
-module github.com/sarrkar/Chan-ta-net/PublisherWebsite
+module github.com/sarrkar/chan-ta-net/publisher-website
 
-go 1.21.0
+go 1.22.5
 
 require github.com/gin-gonic/gin v1.10.0
 

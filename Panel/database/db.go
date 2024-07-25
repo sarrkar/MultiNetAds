@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/sarrkar/Chan-ta-net/Panel/config"
-	"github.com/sarrkar/Chan-ta-net/Panel/models"
+	"github.com/sarrkar/chan-ta-net/panel/config"
+	"github.com/sarrkar/chan-ta-net/panel/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
