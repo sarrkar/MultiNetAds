@@ -24,7 +24,7 @@ func Config() *config {
 				RunMode: "debug",
 			},
 			Client: clientConfig{
-				PanelApi: "http://localhost:8080/api/ad/",
+				PanelApi: "http://panel-webserver:8080/api/ad",
 			},
 		}
 	}

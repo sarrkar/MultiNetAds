@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   panel-database:
-    image: postgres:latest
+    image: postgres:14-alpine
     ports:
      - 5432:5432
     volumes:
@@ -37,7 +37,7 @@ services:
   publisher-site-webserver:
     build: "./PublisherWebsite"
     ports:
-      - 9001:9001
+      - 80:9001
     depends_on:
       - panel-webserver
 

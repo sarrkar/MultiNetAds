@@ -11,21 +11,32 @@ import (
 var set helper.Set = helper.NewSet()
 
 func ClickHandler(ctx *gin.Context) {
+	ctx.Header("Access-Control-Allow-Origin", "*")
 	otlKey := ctx.Param("OTL_key")
-	adID, _ := ctx.GetQuery("ad_id")
-	advID, _ := ctx.GetQuery("adv_id")
-	pubID, _ := ctx.GetQuery("pub_id")
-	redirectURL, _ := ctx.GetQuery("redirect_url")
+	adID, adOK := ctx.GetQuery("ad_id")
+	advID, advOK := ctx.GetQuery("adv_id")
+	pubID, pubOK := ctx.GetQuery("pub_id")
+	redirectURL, redirectOK := ctx.GetQuery("redirect_url")
 
 	if !set.Check(otlKey) {
 		set.Add(otlKey)
-		go client.AddClick(adID, advID, pubID)
+		if adOK && advOK && pubOK {
+			go client.AddClick(adID, advID, pubID)
+		}
 	}
 
-	ctx.Redirect(http.StatusMovedPermanently, redirectURL)
+	if redirectOK {
+		ctx.Redirect(http.StatusMovedPermanently, redirectURL)
+	} else {
+		ctx.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status": "BadRequest",
+			"code":   400,
+		})
+	}
 }
 
 func ImpressionHandler(ctx *gin.Context) {
+	ctx.Header("Access-Control-Allow-Origin", "*")
 	otlKey := ctx.Param("OTL_key")
 	adID, _ := ctx.GetQuery("ad_id")
 	advID, _ := ctx.GetQuery("adv_id")

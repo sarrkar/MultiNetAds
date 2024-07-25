@@ -13,7 +13,7 @@ import (
 )
 
 type Ad struct {
-	ID           int    `json:"id"`
+	ID           uint   `json:"id"`
 	Title        string `json:"title"`
 	ImageUrl     string `json:"image_url"`
 	RedirectUrl  string `json:"redirect_url"`

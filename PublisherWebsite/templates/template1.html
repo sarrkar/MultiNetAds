@@ -1,164 +1,47 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Template 1</title>
-    <link rel="stylesheet" href="/static/css/styles.css">
-    <script src="/static/js/ad-fetcher.js" defer></script>
-</head>
-<body>
-    <header>
-        <h1>My Website</h1>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/template1">Template 1</a></li>
-                <li><a href="/template2">Template 2</a></li>
-                <li><a href="/template3">Template 3</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <main>
-        <section class="content">
-            <h2>Welcome to Template 1</h2>
-            <p>This is some sample content for template 1. Scroll down to see the ad section.</p>
-        </section>
-        
-        <section class="ad-container" id="ad-container">
-            <h2 id="ad-title">Loading Ad Title...</h2>
-            <img id="ad-image" src="" alt="Ad Image" style="width: 500px;">
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 My Website. All rights reserved.</p>
-    </footer>
-</body>
-</html> -->
-
-
-
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ad Publisher</title>
-</head>
-<body>
-    <h1>Template 1</h1>
-    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-    <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br> <br>
-
-    <div id="ad-container">
-    
-    </div>
-
-    <script>
-        async function fetchAd() {
-            try {
-                const response = await fetch('http://localhost:9005/api/ad');
-                const ad = await response.json();
-                displayAd(ad);
-                registerImpressionEvent(ad.impression_event);
-            } catch (error) {
-                console.error('Error fetching ad:', error);
-            }
+    <style>
+        .ad-container {
+            width: 300px;
+            border: 2px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            background-color: #f8f8f8;
+            margin: 20px auto;
         }
 
-        function displayAd(ad) {
-            const adContainer = document.getElementById('ad-container');
-            adContainer.innerHTML = `
-                <h2>${ad.title}</h2>
-                <a href="${ad.click_event}" target="_blank">
-                    <img src="${ad.image_url}" alt="${ad.title}">
-                </a>
-            `;
-            adContainer.querySelector('a').addEventListener('click', () => {
-                registerClickEvent(ad.click_event);
-            });
+        .ad-title {
+            font-size: 18px;
+            margin: 0 0 10px 0;
         }
 
-        function registerImpressionEvent(impressionUrl) {
-            fetch(impressionUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    event: 'impression'
-                })
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log('Impression event registered successfully');
-            }).catch(error => {
-                console.error('Error registering impression event:', error);
-            });
+        .ad-image {
+            max-width: 100%;
+            max-height: 150px; /* Adjust the max-height as needed */
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
         }
-
-        function registerClickEvent(clickUrl) {
-            fetch(clickUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    event: 'click'
-                })
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log('Click event registered successfully');
-            }).catch(error => {
-                console.error('Error registering click event:', error);
-            });
-        }
-
-        // Fetch ad on page load
-        window.onload = fetchAd;
-    </script>
-</body>
-</html> -->
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ad Publisher</title>
+    </style>
 </head>
 <body>
     <h1>Template 1</h1>
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-    <div id="ad-container">
-        <!-- تبلیغ اینجا نمایش داده می‌شود -->
+    <div class="ad-container" id="ad-container">
     </div>
 
     <script>
         async function fetchAd() {
             try {
-                const response = await fetch('http://localhost:9005/api/ad');
+                const response = await fetch('http://localhost:9000/api/ad');
                 const ad = await response.json();
                 displayAd(ad);
-                observeAdImpression(ad.impression_event);
+                observeAdImpression(ad.impression_url+`?ad_id=${ad.id}&adv_id=${ad.advertiser_id}&pub_id=${pub_id}`);
             } catch (error) {
                 console.error('Error fetching ad:', error);
             }
@@ -167,16 +50,11 @@
         function displayAd(ad) {
             const adContainer = document.getElementById('ad-container');
             adContainer.innerHTML = `
-                <h2>${ad.title}</h2>
-                <a href="${ad.click_event}" target="_blank">
-                    <img src="${ad.image_url}" alt="${ad.title}">
+                <a href="${ad.click_url}?ad_id=${ad.id}&adv_id=${ad.advertiser_id}&pub_id=${pub_id}&redirect_url=${ad.redirect_url}" target="_blank">
+                    <img src="${ad.image_url}" alt="${ad.title}" class="ad-image">
+                    <h2 class="ad-title">${ad.title}</h2>
                 </a>
             `;
-            adContainer.querySelector('a').addEventListener('click', (e) => {
-                e.preventDefault();
-                registerClickEvent(ad.click_event);
-                window.open(ad.click_event, '_blank');
-            });
         }
 
         function observeAdImpression(impressionUrl) {
@@ -184,7 +62,7 @@
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        registerImpressionEvent(impressionUrl);
+                        fetch(impressionUrl);
                         observer.unobserve(adContainer);
                     }
                 });
@@ -192,47 +70,10 @@
 
             observer.observe(adContainer);
         }
-
-        function registerImpressionEvent(impressionUrl) {
-            fetch(impressionUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    event: 'impression'
-                })
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log('Impression event registered successfully');
-            }).catch(error => {
-                console.error('Error registering impression event:', error);
-            });
-        }
-
-        function registerClickEvent(clickUrl) {
-            fetch(clickUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    event: 'click'
-                })
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log('Click event registered successfully');
-            }).catch(error => {
-                console.error('Error registering click event:', error);
-            });
-        }
-
-        // Fetch ad on page load
+        
+        pub_id = 1
         window.onload = fetchAd;
     </script>
-</body>
-</html>
+
+
+</body></html>

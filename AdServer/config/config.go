@@ -8,10 +8,10 @@ type config struct {
 }
 
 type serverConfig struct {
-	Port           string
-	RunMode        string
-	EventSeverHost string
-	OTLlength      int
+	Port                   string
+	RunMode                string
+	EventSeverExternalHost string
+	OTLlength              int
 }
 
 type clientConfig struct {
@@ -25,10 +25,10 @@ func Config() *config {
 	if cfg == nil {
 		cfg = &config{
 			Server: serverConfig{
-				Port:           "9000",
-				RunMode:        "debug",
-				EventSeverHost: "http://event-server-webserver:7000",
-				OTLlength:      10,
+				Port:                   "9000",
+				RunMode:                "debug",
+				EventSeverExternalHost: "http://localhost:9002",
+				OTLlength:              10,
 			},
 			Client: clientConfig{
 				PanelApi: "http://panel-webserver:8080/api/ad/all_ads",

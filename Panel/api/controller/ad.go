@@ -64,7 +64,6 @@ func (ctrl *AdController) IncClick(ctx *gin.Context) {
 	ad.Click++
 	ctrl.DB.Save(&ad)
 
-	ctx.Header("Cache-Control", "no-cache, no-store, must-revalidate")
 	ctx.Redirect(http.StatusMovedPermanently, ad.RedirectUrl)
 }
 

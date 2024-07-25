@@ -11,21 +11,27 @@ import (
 )
 
 type AdResponse struct {
+	ID            uint   `json:"id"`
+	AdvertiserID  uint   `json:"advertiser_id"`
 	Title         string `json:"title"`
 	ImageUrl      string `json:"image_url"`
-	ImpressionUrl string `json:"impression_event"`
-	ClickUrl      string `json:"click_event"`
+	RedirectUrl   string `json:"redirect_url"`
+	ImpressionUrl string `json:"impression_url"`
+	ClickUrl      string `json:"click_url"`
 }
 
 func GetAd(ctx *gin.Context) {
 	ctx.Header("Access-Control-Allow-Origin", "*")
 	ad := client.GetBestAds()
 	ctx.IndentedJSON(http.StatusOK, AdResponse{
-		Title:    ad.Title,
-		ImageUrl: ad.ImageUrl,
-		ImpressionUrl: fmt.Sprintf("%s/click/%d/%s", config.Config().Server.EventSeverHost,
-			ad.ID, helper.RandStr(config.Config().Server.OTLlength)),
-		ClickUrl: fmt.Sprintf("%s/impression/%d/%s", config.Config().Server.EventSeverHost,
-			ad.ID, helper.RandStr(config.Config().Server.OTLlength)),
+		ID:           ad.ID,
+		AdvertiserID: ad.AdvertiserID,
+		Title:        ad.Title,
+		ImageUrl:     ad.ImageUrl,
+		RedirectUrl:  ad.RedirectUrl,
+		ImpressionUrl: fmt.Sprintf("%s/impression/%s", config.Config().Server.EventSeverExternalHost,
+			helper.RandStr(config.Config().Server.OTLlength)),
+		ClickUrl: fmt.Sprintf("%s/click/%s", config.Config().Server.EventSeverExternalHost,
+			helper.RandStr(config.Config().Server.OTLlength)),
 	})
 }

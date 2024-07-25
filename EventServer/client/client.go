@@ -10,7 +10,7 @@ import (
 
 func AddClick(adID, advID, pubID string) {
 	fmt.Println("add click")
-	resp, err := http.Get(config.Config().Client.PanelApi + adID)
+	resp, err := http.Get(config.Config().Client.PanelApi + "/inc_click/" + adID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,7 +19,7 @@ func AddClick(adID, advID, pubID string) {
 
 func AdImperession(adID, advID, pubID string) {
 	fmt.Println("add impression")
-	resp, err := http.Get(config.Config().Client.PanelApi + adID)
+	resp, err := http.Get(config.Config().Client.PanelApi + "/inc_impression/" + adID)
 	if err != nil {
 		log.Fatal(err)
 	}
