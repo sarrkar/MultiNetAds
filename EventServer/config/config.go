@@ -1,5 +1,7 @@
 package config
 
+import "os"
+
 type config struct {
 	Server serverConfig
 	Client clientConfig
@@ -18,15 +20,28 @@ var cfg *config
 
 func Config() *config {
 	if cfg == nil {
-		cfg = &config{
-			Server: serverConfig{
-				Port:    "7000",
-				RunMode: "debug",
-			},
-			Client: clientConfig{
-				PanelApi: "http://panel-webserver:8080/api/ad",
-			},
+		if os.Getenv("APP_ENV") == "docker" {
+			cfg = &config{
+				Server: serverConfig{
+					Port:    "9003",
+					RunMode: "release",
+				},
+				Client: clientConfig{
+					PanelApi: "http://panel-webserver:9001/api/ad",
+				},
+			}
+		} else {
+			cfg = &config{
+				Server: serverConfig{
+					Port:    "5003",
+					RunMode: "debug",
+				},
+				Client: clientConfig{
+					PanelApi: "http://localhost:5001/api/ad",
+				},
+			}
 		}
 	}
+
 	return cfg
 }

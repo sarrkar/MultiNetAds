@@ -1,15 +1,19 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sarrkar/chan-ta-net/publisher-website/config"
 )
 
 func main() {
 	router := gin.Default()
+	gin.SetMode(config.Config().Server.RunMode)
 
-	router.LoadHTMLGlob("templates/*")
+	router.LoadHTMLGlob(config.Config().Server.TemplateDir)
 
 	router.GET("/template1", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "template1.html", nil)
@@ -31,5 +35,8 @@ func main() {
 		c.HTML(http.StatusOK, "template5.html", nil)
 	})
 
-	router.Run(":9001")
+	err := router.Run(fmt.Sprintf(":%s", config.Config().Server.Port))
+	if err != nil {
+		log.Fatalln(err)
+	}
 }

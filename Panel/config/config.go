@@ -8,8 +8,9 @@ type config struct {
 }
 
 type serverConfig struct {
-	Port    string
-	RunMode string
+	Port        string
+	RunMode     string
+	TemplateDir string
 }
 
 type postgresConfig struct {
@@ -25,18 +26,37 @@ var cfg *config
 
 func Config() *config {
 	if cfg == nil {
-		cfg = &config{
-			Server: serverConfig{
-				Port:    "8080",
-				RunMode: "debug",
-			},
-			Postgres: postgresConfig{
-				Host:     os.Getenv("POSTGRES_HOST"),
-				Port:     "5432",
-				User:     os.Getenv("POSTGRES_USER"),
-				Password: os.Getenv("POSTGRES_PASSWORD"),
-				DbName:   os.Getenv("POSTGRES_DB"),
-			},
+		if os.Getenv("APP_ENV") == "docker" {
+			cfg = &config{
+				Server: serverConfig{
+					Port:        "9001",
+					RunMode:     "release",
+					TemplateDir: "/app/api/templates/*",
+				},
+				Postgres: postgresConfig{
+					Host:     os.Getenv("POSTGRES_HOST"),
+					Port:     "5432",
+					User:     os.Getenv("POSTGRES_USER"),
+					Password: os.Getenv("POSTGRES_PASSWORD"),
+					DbName:   os.Getenv("POSTGRES_DB"),
+				},
+			}
+		} else {
+			cfg = &config{
+				Server: serverConfig{
+					Port:        "5001",
+					RunMode:     "debug",
+					TemplateDir: "api/templates/*",
+				},
+				Postgres: postgresConfig{
+					Host:     "localhost",
+					Port:     "5432",
+					User:     "admin",
+					Password: "12345678",
+					DbName:   "test",
+				},
+			}
+
 		}
 	}
 

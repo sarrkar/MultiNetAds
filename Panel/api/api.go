@@ -16,7 +16,7 @@ func InitServer() {
 	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
-	r.LoadHTMLGlob("api/templates/*")
+	r.LoadHTMLGlob(config.Config().Server.TemplateDir)
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)

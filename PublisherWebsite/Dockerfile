@@ -14,6 +14,7 @@ RUN go build -v -o server ./main.go
 FROM alpine:3.20
 
 COPY --from=builder /app/server /app/server
+COPY --from=builder /app/templates /app/templates
 
 ENV APP_ENV=docker
 

@@ -3,18 +3,18 @@ version: '3.9'
 services:
   panel-database:
     image: postgres:14-alpine
-    ports:
-     - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=Mam@d123
       - POSTGRES_USER=postgres
       - POSTGRES_DB=panel
+    restart: unless-stopped
+
   panel-webserver:
     build: "./Panel"
     ports:
-      - 8080:8080
+      - 8080:9001
     environment:
       - POSTGRES_HOST=panel-database
       - POSTGRES_PASSWORD=Mam@d123
@@ -22,24 +22,29 @@ services:
       - POSTGRES_DB=panel
     depends_on:
       - panel-database
+    restart: unless-stopped
+
   ad-server-webserver:
     build: "./AdServer"
     ports:
-      - 9000:9000
+      - 5002:9002
     depends_on:
       - panel-webserver
+    restart: unless-stopped
+      
   event-server-webserver:
     build: "./EventServer"
     ports:
-      - 9002:7000
+      - 5003:9003
     depends_on:
       - panel-webserver
+    restart: unless-stopped
+      
   publisher-site-webserver:
     build: "./PublisherWebsite"
     ports:
-      - 80:9001
-    depends_on:
-      - panel-webserver
+      - 80:9004
+    restart: unless-stopped
 
 volumes:
   pgdata:

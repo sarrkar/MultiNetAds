@@ -1,6 +1,9 @@
 package config
 
-import "time"
+import (
+	"os"
+	"time"
+)
 
 type config struct {
 	Server serverConfig
@@ -23,18 +26,34 @@ var cfg *config
 
 func Config() *config {
 	if cfg == nil {
-		cfg = &config{
-			Server: serverConfig{
-				Port:                   "9000",
-				RunMode:                "debug",
-				EventSeverExternalHost: "http://localhost:9002",
-				OTLlength:              10,
-			},
-			Client: clientConfig{
-				PanelApi: "http://panel-webserver:8080/api/ad/all_ads",
-				Period:   1 * time.Minute,
-			},
+		if os.Getenv("APP_ENV") == "docker" {
+			cfg = &config{
+				Server: serverConfig{
+					Port:                   "9002",
+					RunMode:                "debug",
+					EventSeverExternalHost: "http://localhost:5003",
+					OTLlength:              10,
+				},
+				Client: clientConfig{
+					PanelApi: "http://panel-webserver:9001/api/ad/all_ads",
+					Period:   10 * time.Minute,
+				},
+			}
+		} else {
+			cfg = &config{
+				Server: serverConfig{
+					Port:                   "5002",
+					RunMode:                "debug",
+					EventSeverExternalHost: "http://localhost:5003",
+					OTLlength:              10,
+				},
+				Client: clientConfig{
+					PanelApi: "http://localhost:5001/api/ad/all_ads",
+					Period:   1 * time.Minute,
+				},
+			}
 		}
 	}
+
 	return cfg
 }
