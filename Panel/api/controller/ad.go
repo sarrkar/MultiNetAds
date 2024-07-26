@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"sync"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sarrkar/chan-ta-net/panel/database"
@@ -12,7 +11,6 @@ import (
 
 type AdController struct {
 	DB *gorm.DB
-	mu sync.Mutex
 }
 
 func NewAdController() *AdController {
@@ -24,7 +22,6 @@ func NewAdController() *AdController {
 func (ctrl *AdController) GetAds(ctx *gin.Context) {
 	var ads []models.Ad
 
-	// TODO: where(Ad.adviser.Balance) > 0
 	if result := ctrl.DB.Where(&models.Ad{Active: true}).Find(&ads); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
@@ -34,12 +31,10 @@ func (ctrl *AdController) GetAds(ctx *gin.Context) {
 }
 
 func (ctrl *AdController) IncImpression(ctx *gin.Context) {
-	id := ctx.Param("id")
+	adId := ctx.Param("ad_id")
 	var ad models.Ad
 
-	ctrl.mu.Lock()
-	defer ctrl.mu.Unlock()
-	if result := ctrl.DB.First(&ad, id); result.Error != nil {
+	if result := ctrl.DB.First(&ad, adId); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
@@ -51,17 +46,33 @@ func (ctrl *AdController) IncImpression(ctx *gin.Context) {
 }
 
 func (ctrl *AdController) IncClick(ctx *gin.Context) {
-	id := ctx.Param("id")
-	var ad models.Ad
+	adId := ctx.Param("ad_id")
+	advId := ctx.Param("adv_id")
+	pubId := ctx.Param("pub_id")
 
-	ctrl.mu.Lock()
-	defer ctrl.mu.Unlock()
-	if result := ctrl.DB.First(&ad, id); result.Error != nil {
+	var ad models.Ad
+	var adv models.Advertiser
+	var pub models.Publisher
+
+	if result := ctrl.DB.First(&ad, adId); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
-
 	ad.Click++
+	ctrl.DB.Save(&ad)
+
+	if result := ctrl.DB.First(&adv, advId); result.Error != nil {
+		ctx.AbortWithError(http.StatusNotFound, result.Error)
+		return
+	}
+	adv.Balance -= ad.BID
+	ctrl.DB.Save(&ad)
+
+	if result := ctrl.DB.First(&pub, pubId); result.Error != nil {
+		ctx.AbortWithError(http.StatusNotFound, result.Error)
+		return
+	}
+	pub.Balance += (pub.CommissionPercent * ad.BID) / 100
 	ctrl.DB.Save(&ad)
 
 	ctx.Redirect(http.StatusMovedPermanently, ad.RedirectUrl)
@@ -69,34 +80,112 @@ func (ctrl *AdController) IncClick(ctx *gin.Context) {
 
 func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 
-	ads := []models.Ad{
+	ctrl.DB.Exec("DELETE FROM ads")
+	ctrl.DB.Exec("DELETE FROM advertisers")
+	ctrl.DB.Exec("DELETE FROM publishers")
+
+	advs := []models.Advertiser{
 		{
-			Title:       "title 1",
-			ImageUrl:    "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
-			RedirectUrl: "https://www.google.com/",
-			BID:         1000,
-			Active:      true,
-			Impression:  0,
-			Click:       0,
+			Name:    "adv 1",
+			Balance: 50000,
+			Ads: []models.Ad{
+				{
+					Title:       "title1 adv1",
+					ImageUrl:    "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+					RedirectUrl: "https://www.google.com/",
+					BID:         1000,
+					Active:      true,
+					Impression:  0,
+					Click:       0,
+				},
+				{
+					Title:       "title2 adv1",
+					ImageUrl:    "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+					RedirectUrl: "https://www.varzesh3.com/",
+					BID:         2000,
+					Active:      true,
+					Impression:  0,
+					Click:       0,
+				},
+				{
+					Title:       "title3 adv1",
+					ImageUrl:    "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+					RedirectUrl: "https://www.varzesh3.com/",
+					BID:         2000,
+					Active:      false,
+					Impression:  0,
+					Click:       0,
+				},
+			},
 		},
 		{
-			Title:       "title 2",
-			ImageUrl:    "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
-			RedirectUrl: "https://www.varzesh3.com/",
-			BID:         2000,
-			Active:      true,
-			Impression:  0,
-			Click:       0,
+			Name:    "adv 2",
+			Balance: 30000,
+			Ads: []models.Ad{
+				{
+					Title:       "title1 adv2",
+					ImageUrl:    "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+					RedirectUrl: "https://www.google.com/",
+					BID:         500,
+					Active:      true,
+					Impression:  0,
+					Click:       0,
+				},
+				{
+					Title:       "title2 adv2",
+					ImageUrl:    "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+					RedirectUrl: "https://www.varzesh3.com/",
+					BID:         1500,
+					Active:      true,
+					Impression:  0,
+					Click:       0,
+				},
+				{
+					Title:       "title3 adv2",
+					ImageUrl:    "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg",
+					RedirectUrl: "https://www.varzesh3.com/",
+					BID:         1000,
+					Active:      false,
+					Impression:  0,
+					Click:       0,
+				},
+			},
 		},
 	}
 
-	adv := models.Advertiser{
-		Name:    "adv 1",
-		Balance: 50000,
-		Ads:     ads,
+	pubs := []models.Publisher{
+		{
+			Name:              "pub1",
+			Balance:           0,
+			CommissionPercent: 20,
+		},
+		{
+			Name:              "pub2",
+			Balance:           15000,
+			CommissionPercent: 15,
+		},
+		{
+			Name:              "pub3",
+			Balance:           1000,
+			CommissionPercent: 10,
+		},
+		{
+			Name:              "pub4",
+			Balance:           0,
+			CommissionPercent: 10,
+		},
+		{
+			Name:              "pub5",
+			Balance:           0,
+			CommissionPercent: 30,
+		},
 	}
 
-	ctrl.DB.Create(&adv)
+	ctrl.DB.Create(&advs)
+	ctrl.DB.Create(&pubs)
 
-	ctx.JSON(http.StatusOK, &adv)
+	ctx.JSON(http.StatusOK, gin.H{
+		"advs": &advs,
+		"pubs": &pubs,
+	})
 }

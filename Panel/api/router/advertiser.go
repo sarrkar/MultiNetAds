@@ -17,7 +17,8 @@ func advertiserAd(r *gin.RouterGroup) {
 	})
 
 	r.GET("/list", func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Param("advertiser_id"))
+		intId, err := strconv.Atoi(c.Param("advertiser_id"))
+		id := uint(intId)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
@@ -41,7 +42,8 @@ func advertiserAd(r *gin.RouterGroup) {
 		referralLink := c.PostForm("referral_link")
 		imageLink := c.PostForm("image_link")
 
-		id, err := strconv.Atoi(c.Param("advertiser_id"))
+		intId, err := strconv.Atoi(c.Param("advertiser_id"))
+		id := uint(intId)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
@@ -61,16 +63,16 @@ func advertiserAd(r *gin.RouterGroup) {
 
 		ad := &models.Ad{
 			Title:        title,
-			BID:          uint(bid),
+			BID:          bid,
 			RedirectUrl:  referralLink,
 			ImageUrl:     imageLink,
 			Active:       true,
-			AdvertiserID: uint(advertiser.ID),
+			AdvertiserID: advertiser.ID,
 		}
 
 		ctrl.DB.Create(ad)
 
-		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(advertiser.ID)+"/ads/list")
+		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(int(advertiser.ID))+"/ads/list")
 	})
 
 }
@@ -87,7 +89,8 @@ func advertiserFinance(r *gin.RouterGroup) {
 	})
 
 	r.GET("/balance", func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Param("advertiser_id"))
+		intId, err := strconv.Atoi(c.Param("advertiser_id"))
+		id := uint(intId)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
@@ -107,12 +110,14 @@ func advertiserFinance(r *gin.RouterGroup) {
 	})
 
 	r.POST("/add-credit", func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Param("advertiser_id"))
+		intId, err := strconv.Atoi(c.Param("advertiser_id"))
+		id := uint(intId)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
-		amount, err := strconv.Atoi(c.PostForm("amount"))
+		amount, err := strconv.Atoi(c.Param("amount"))
+
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
@@ -126,7 +131,7 @@ func advertiserFinance(r *gin.RouterGroup) {
 		advertiser.Balance += amount
 		ctrl.DB.Save(advertiser)
 
-		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(advertiser.ID)+"/finance/balance")
+		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(int(advertiser.ID))+"/finance/balance")
 	})
 
 }
@@ -150,11 +155,12 @@ func Advertiser(r *gin.RouterGroup) {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
-		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(advertiser.ID))
+		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(int(advertiser.ID)))
 	})
 
 	r.GET("/:advertiser_id", func(c *gin.Context) {
-		id, err := strconv.Atoi(c.Param("advertiser_id"))
+		intId, err := strconv.Atoi(c.Param("advertiser_id"))
+		id := uint(intId)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
