@@ -1,7 +1,20 @@
-FROM golang:1.22.5
-COPY . /app
+FROM golang:1.22.5-alpine3.20 AS builder
+
 WORKDIR /app
 
-ENV GOPROXY https://goproxy.io,direct
-RUN go build -o event-server .
-CMD ["./event-server"]
+COPY go.* ./
+ENV GOPROXY=https://goproxy.io,direct
+RUN go mod download
+
+COPY . ./
+
+RUN go build -v -o server ./main.go
+
+
+FROM alpine:3.20
+
+COPY --from=builder /app/server /app/server
+
+ENV APP_ENV=docker
+
+CMD [ "/app/server" ]
