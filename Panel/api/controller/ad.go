@@ -66,14 +66,14 @@ func (ctrl *AdController) IncClick(ctx *gin.Context) {
 		return
 	}
 	adv.Balance -= ad.BID
-	ctrl.DB.Save(&ad)
+	ctrl.DB.Save(&adv)
 
 	if result := ctrl.DB.First(&pub, pubId); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
 	pub.Balance += (pub.CommissionPercent * ad.BID) / 100
-	ctrl.DB.Save(&ad)
+	ctrl.DB.Save(&pub)
 
 	ctx.Redirect(http.StatusMovedPermanently, ad.RedirectUrl)
 }

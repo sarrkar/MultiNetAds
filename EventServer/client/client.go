@@ -10,7 +10,7 @@ import (
 
 func AddClick(adID, advID, pubID string) {
 	fmt.Println("add click")
-	resp, err := http.Get(config.Config().Client.PanelApi + "/inc_click/" + adID)
+	resp, err := http.Get(config.Config().Client.PanelApi + "/inc_click/" + adID + "/" + advID + "/" + pubID)
 	if err != nil {
 		log.Fatal(err)
 	}
