@@ -23,6 +23,10 @@ type AdResponse struct {
 func GetAd(ctx *gin.Context) {
 	ctx.Header("Access-Control-Allow-Origin", "*")
 	ad := client.GetBestAds()
+	if ad.ID == 0 {
+		ctx.IndentedJSON(http.StatusNotFound, nil)
+		return
+	}
 	ctx.IndentedJSON(http.StatusOK, AdResponse{
 		ID:           ad.ID,
 		AdvertiserID: ad.AdvertiserID,
