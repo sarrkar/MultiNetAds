@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	err := database.InitDb()
 	defer database.CloseDb()
 	if err != nil {

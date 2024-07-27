@@ -3,24 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صفحه ناشر</title>
+    <title>publisher</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 50px;
         }
+        form {
+            display: inline-block;
+            text-align: left;
+        }
+        input {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 16px;
+        }
         button {
             padding: 10px 20px;
-            margin: 10px;
+            margin-top: 20px;
             font-size: 16px;
         }
     </style>
 </head>
 <body>
-    <h1>صفحه ناشر</h1>
-    <button onclick="location.href='/add-script'">اضافه کردن Script</button>
-    <button onclick="location.href='/financial-operations'">عملیات مالی</button>
-    <button onclick="location.href='/reports'">مشاهده گزارشات</button>
+    <h1>publisher</h1>
+    <ul>
+        {{range .Publisher}}
+        <li>
+            <a href="{{.ID}}">{{.Name}}</a>
+        </li>
+        {{end}}
+    </ul>
+    <form action="submit-name" method="post">
+        <label for="name">نام خود را وارد کنید:</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">ارسال</button>
+    </form>
 </body>
 </html>

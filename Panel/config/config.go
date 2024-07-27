@@ -51,9 +51,9 @@ func Config() *config {
 				Postgres: postgresConfig{
 					Host:     "localhost",
 					Port:     "5432",
-					User:     "admin",
-					Password: "12345678",
-					DbName:   "test",
+					User:     "postgres",
+					Password: "Mam@d123",
+					DbName:   "panel",
 				},
 			}
 

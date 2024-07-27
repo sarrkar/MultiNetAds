@@ -3,7 +3,6 @@ package client
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"sort"
 	"sync"
@@ -30,29 +29,39 @@ var mu sync.Mutex = sync.Mutex{}
 func GetBestAds() Ad {
 	mu.Lock()
 	defer mu.Unlock()
-	return ads[0]
+	if len(ads) >= 1 {
+		return ads[0]
+	} else {
+		return Ad{}
+	}
 }
 
 func UpdateAdsCache() {
-
 	for {
-		mu.Lock()
-		resp, err := http.Get(config.Config().Client.PanelApi)
-		if err != nil {
-			log.Fatal(err)
+		if err := getAds(); err != nil {
+			time.Sleep(config.Config().Client.Retry)
+			continue
 		}
-		b, err := io.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
-		json.Unmarshal(b, &ads)
-		resp.Body.Close()
-
-		sort.Slice(ads, func(i, j int) bool {
-			return ads[i].BID > ads[j].BID
-		})
-
-		mu.Unlock()
 		time.Sleep(config.Config().Client.Period)
 	}
+}
+
+func getAds() error {
+	mu.Lock()
+	defer mu.Unlock()
+	resp, err := http.Get(config.Config().Client.PanelApi)
+	if err != nil {
+		return err
+	}
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	json.Unmarshal(b, &ads)
+	resp.Body.Close()
+
+	sort.Slice(ads, func(i, j int) bool {
+		return ads[i].BID > ads[j].BID
+	})
+	return nil
 }
