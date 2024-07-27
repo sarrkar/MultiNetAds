@@ -116,7 +116,8 @@ func advertiserFinance(r *gin.RouterGroup) {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
-		amount, err := strconv.Atoi(c.Param("amount"))
+		
+		amount, err := strconv.Atoi(c.PostForm("amount"))
 
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
