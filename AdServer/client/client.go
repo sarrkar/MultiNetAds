@@ -2,6 +2,7 @@ package client
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"sort"
@@ -49,6 +50,7 @@ func UpdateAdsCache() {
 func getAds() error {
 	mu.Lock()
 	defer mu.Unlock()
+	fmt.Println("try to update ads from panel api")
 	resp, err := http.Get(config.Config().Client.PanelApi)
 	if err != nil {
 		return err

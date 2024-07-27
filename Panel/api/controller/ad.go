@@ -86,7 +86,7 @@ func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 
 	advs := []models.Advertiser{
 		{
-			Name:    "adv 1",
+			Name:    "adv1",
 			Balance: 50000,
 			Ads: []models.Ad{
 				{
@@ -119,7 +119,7 @@ func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 			},
 		},
 		{
-			Name:    "adv 2",
+			Name:    "adv2",
 			Balance: 30000,
 			Ads: []models.Ad{
 				{
