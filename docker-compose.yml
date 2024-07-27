@@ -4,7 +4,7 @@ services:
   panel-database:
     image: postgres:14-alpine
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - paneldata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=Mam@d123
       - POSTGRES_USER=postgres
@@ -49,4 +49,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  pgdata:
+  paneldata:

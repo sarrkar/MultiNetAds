@@ -22,7 +22,7 @@ func PublisherFinance(r *gin.RouterGroup) {
 	ctrl := controller.NewPublisherController()
 
 	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "my_finance.html", nil)
+		c.HTML(http.StatusOK, "pub_finance.html", nil)
 	})
 
 	r.GET("/balance", func(c *gin.Context) {
@@ -42,34 +42,23 @@ func PublisherFinance(r *gin.RouterGroup) {
 		c.HTML(http.StatusOK, "balance.html", gin.H{"Name": publisher.Name, "Balance": publisher.Balance})
 	})
 
-	r.GET("/payment", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "payment.html", nil)
-	})
-
-	r.POST("/add-credit", func(c *gin.Context) {
+	r.GET("/checkout", func(c *gin.Context) {
 		uid, err := strconv.Atoi(c.Param("publisher_id"))
 		id := uint(uid)
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
-		amount, err := strconv.Atoi(c.PostForm("amount"))
-		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
-			return
-		}
-
 		publisher, err := ctrl.GetPublisher(id)
 		if err != nil {
 			c.AbortWithError(http.StatusNotFound, err)
 			return
 		}
-		publisher.Balance += amount
+		publisher.Balance = 0
 		ctrl.DB.Save(publisher)
 
-		c.Redirect(http.StatusFound, "/publisher/"+strconv.Itoa(int(publisher.ID))+"/finance/balance")
+		c.HTML(http.StatusOK, "checkout.html", nil)
 	})
-
 }
 
 func Publisher(r *gin.RouterGroup) {
