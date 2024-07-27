@@ -15,7 +15,7 @@ func InitServer() {
 	//	r := gin.New()
 	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
-	r.Static("/static", "api/static")
+	r.Static("/static", config.Config().Server.StaticDir)
 
 	r.LoadHTMLGlob(config.Config().Server.TemplateDir)
 

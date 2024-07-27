@@ -11,6 +11,7 @@ type serverConfig struct {
 	Port        string
 	RunMode     string
 	TemplateDir string
+	StaticDir   string
 }
 
 type postgresConfig struct {
@@ -32,6 +33,7 @@ func Config() *config {
 					Port:        "9001",
 					RunMode:     "release",
 					TemplateDir: "/app/api/templates/*",
+					StaticDir:   "app/api/static",
 				},
 				Postgres: postgresConfig{
 					Host:     os.Getenv("POSTGRES_HOST"),
@@ -47,6 +49,7 @@ func Config() *config {
 					Port:        "5001",
 					RunMode:     "debug",
 					TemplateDir: "api/templates/*",
+					StaticDir:   "api/static",
 				},
 				Postgres: postgresConfig{
 					Host:     "localhost",
