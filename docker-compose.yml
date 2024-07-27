@@ -9,6 +9,8 @@ services:
       - POSTGRES_PASSWORD=Mam@d123
       - POSTGRES_USER=postgres
       - POSTGRES_DB=panel
+    ports:
+      - 5432:5432
     restart: unless-stopped
 
   panel-webserver:
