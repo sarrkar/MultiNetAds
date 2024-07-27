@@ -15,6 +15,7 @@ FROM alpine:3.20
 
 COPY --from=builder /app/server /app/server
 COPY --from=builder /app/api/templates /app/api/templates
+COPY --from=builder /app/api/static /app/api/static
 
 ENV APP_ENV=docker
 
