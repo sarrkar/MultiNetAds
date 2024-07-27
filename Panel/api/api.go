@@ -22,10 +22,6 @@ func InitServer() {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 
-	//	r.GET("/advertiser", func(c *gin.Context) {
-	//		c.HTML(http.StatusOK, "advertiser.html", nil)
-	//	})
-
 	RegisterRoutes(r)
 
 	err := r.Run(fmt.Sprintf(":%s", config.Config().Server.Port))
@@ -41,24 +37,13 @@ func RegisterRoutes(r *gin.Engine) {
 	}
 
 	pub := r.Group("/publisher")
-	{
-		pub.GET("/", func(c *gin.Context) {
-			c.HTML(http.StatusOK, "publisher.html", nil)
-		})
+	{		router.Publisher(pub)
 
-		pubPlace := pub.Group("/place")
-		pubReport := pub.Group("/report")
-		pubFinance := pub.Group("/finance")
-
-		router.PublisherPlace(pubPlace)
-		router.PublisherReport(pubReport)
-		router.PublisherFinance(pubFinance)
 	}
 
 	api := r.Group("/api")
 	{
 		Ad := api.Group("/ad")
-
 		router.Ad(Ad)
 	}
 

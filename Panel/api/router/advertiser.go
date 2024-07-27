@@ -183,3 +183,9 @@ func Advertiser(r *gin.RouterGroup) {
 	advertiserReport(advReport)
 	advertiserFinance(advFinance)
 }
+
+
+
+
+
+
