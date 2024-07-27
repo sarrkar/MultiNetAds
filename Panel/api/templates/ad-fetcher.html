@@ -8,12 +8,69 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 50px;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(270deg, #ff7e5f, #feb47b);
+            background-size: 400% 400%;
+            animation: gradientBackground 15s ease infinite;
+            color: #333;
         }
+
+        @keyframes gradientBackground {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        pre.prettyprint {
+            background-color: #2e2e2e;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            text-align: left;
+            margin: 0 auto;
+            max-width: 90%;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
         button {
             padding: 10px 20px;
             margin: 10px;
             font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            background-color: #004080;
+        }
+
+        .button-container {
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -73,5 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 });
     </pre>
+
+    <div class="button-container">
+        <button onclick="location.href='some-url'">برگشت به صفحه قبلی</button>
+        <button onclick="location.href='/'">بازگشت به خانه</button>
+    </div>
 </body>
 </html>
