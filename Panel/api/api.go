@@ -15,6 +15,7 @@ func InitServer() {
 	//	r := gin.New()
 	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	r.Static("/static", "api/static")
 
 	r.LoadHTMLGlob(config.Config().Server.TemplateDir)
 
@@ -37,7 +38,8 @@ func RegisterRoutes(r *gin.Engine) {
 	}
 
 	pub := r.Group("/publisher")
-	{		router.Publisher(pub)
+	{
+		router.Publisher(pub)
 
 	}
 
