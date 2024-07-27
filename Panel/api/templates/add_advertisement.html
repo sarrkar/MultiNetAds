@@ -5,44 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>اضافه کردن تبلیغ</title>
     <style>
+        @keyframes gradientBackground {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Vazir', Arial, sans-serif;
+            background: linear-gradient(270deg, #ff7e5f, #feb47b);
+            background-size: 400% 400%;
+            animation: gradientBackground 15s ease infinite;
+            color: #333;
             text-align: center;
-            margin-top: 50px;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            direction: rtl;
+        }
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
         }
         form {
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: left;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .logo {
+            position: absolute;
+            top: -40px;
+            left: 20px;
+            width: 50px;
+            height: auto;
         }
         input, textarea {
             display: block;
-            margin: 10px auto;
+            margin: 10px 0;
             padding: 10px;
             width: 100%;
-            max-width: 400px;
             font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         textarea {
             height: 150px;
             font-size: 16px;
         }
         button, a {
-            padding: 10px 20px;
-            margin-top: 20px;
-            font-size: 16px;
-            text-decoration: none;
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 18px;
             color: #fff;
             background-color: #007bff;
+            border: none;
             border-radius: 5px;
-            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            text-align: center;
+        }
+        button:hover, a:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        button:active, a:active {
+            background-color: #004080;
         }
         a {
             background-color: #6c757d;
         }
+        label {
+            margin-bottom: 5px;
+            font-size: 16px;
+            color: #333;
+            align-self: flex-start;
+        }
     </style>
 </head>
 <body>
+
     <h1>اضافه کردن تبلیغ</h1>
+    
     <form action="create" method="post">
         <label for="title">عنوان تبلیغ:</label>
         <input type="text" id="title" name="title" required>
@@ -55,10 +118,11 @@
 
         <label for="image_link">لینک تصویر:</label>
         <input type="url" id="image_link" name="image_link">
-
         <button type="submit">ارسال تبلیغ</button>
     </form>
-    <br>
-    <a href="/">بازگشت به صفحه تبلیغ‌کننده</a>
+    <div class="buttons">
+        <button onclick="history.back()">بازگشت به صفحه قبل</button>
+        <a href="/" class="home-button">بازگشت به خانه</a>
+    </div>
 </body>
 </html>

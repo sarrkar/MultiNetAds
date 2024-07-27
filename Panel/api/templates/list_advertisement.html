@@ -5,71 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مشاهده تبلیغ</title>
     <style>
+        @keyframes gradientBackground {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Vazir', Arial, sans-serif;
+            background: linear-gradient(270deg, #ff7e5f, #feb47b);
+            background-size: 400% 400%;
+            animation: gradientBackground 15s ease infinite;
+            color: #333;
             text-align: center;
-            margin-top: 50px;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            direction: rtl;
         }
-        form {
-            display: inline-block;
-            text-align: left;
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
         }
-        input, textarea {
-            display: block;
-            margin: 10px auto;
-            padding: 10px;
+        table {
             width: 100%;
-            max-width: 400px;
-            font-size: 16px;
+            max-width: 800px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        textarea {
-            height: 150px;
-            font-size: 16px;
+        th, td {
+            padding: 12px 20px;
+            border: 1px solid #ddd;
         }
-        button, a {
-            padding: 10px 20px;
-            margin-top: 20px;
+        th {
+            background-color: #f8f9fa;
+            font-size: 18px;
+        }
+        td {
             font-size: 16px;
-            text-decoration: none;
-            color: #fff;
-            background-color: #007bff;
-            border-radius: 5px;
-            display: inline-block;
         }
         a {
-            background-color: #6c757d;
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        button, .home-button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button:hover, .home-button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        button:active, .home-button:active {
+            background-color: #004080;
         }
     </style>
 </head>
 <body>
     <h1>مشاهده تبلیغ</h1>
     <table>
-        <tr>
-            <td>عنوان</td>
-            <td>عکس</td>
-            <td>هزینه</td>
-            <td>بازدید</td>
-            <td>کلیک</td>
-        </tr>
-        {{range .Ads}}
-        <tr>
-            <td>
-                <a href="{{.RedirectUrl}}"><span>{{.Title}}</span></a>
-            </td>
-            <td>
-                <img src="{{.ImageUrl}}" width="200px" />
-            </td>
-            <td>
-                <span>{{.BID}} تومان</span>
-            </td>
-            <td>
-                <span>{{.Impression}}</span>
-            </td>
-            <td>
-                <span>{{.Click}}</span>
-            </td>
-        </tr>
-        {{end}}
+        <thead>
+            <tr>
+                <th>عنوان</th>
+                <th>هزینه</th>
+                <th>بازدید</th>
+                <th>کلیک</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Ads}}
+            <tr>
+                <td>
+                    <a href="{{.RedirectUrl}}" target="_blank">{{.Title}}</a>
+                </td>
+                <td>
+                    {{.BID}} تومان
+                </td>
+                <td>
+                    {{.Impression}}
+                </td>
+                <td>
+                    {{.Click}}
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
     </table>
+    <div class="buttons">
+        <button onclick="history.back()">بازگشت به صفحه قبل</button>
+        <a href="/" class="home-button">بازگشت به خانه</a>
+    </div>
 </body>
 </html>
