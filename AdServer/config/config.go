@@ -27,12 +27,14 @@ var cfg *config
 
 func Config() *config {
 	if cfg == nil {
+		host := os.Getenv("EVENTSERVERHOST")
+		port := os.Getenv("EVENTSERVERPORT")
 		if os.Getenv("APP_ENV") == "docker" {
 			cfg = &config{
 				Server: serverConfig{
 					Port:                   "9002",
 					RunMode:                "debug",
-					EventSeverExternalHost: "http://localhost:5003",
+					EventSeverExternalHost: host + ":" + port,
 					OTLlength:              10,
 				},
 				Client: clientConfig{

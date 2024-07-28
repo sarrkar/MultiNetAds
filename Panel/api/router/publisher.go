@@ -6,11 +6,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sarrkar/chan-ta-net/panel/api/controller"
+	"github.com/sarrkar/chan-ta-net/panel/config"
 )
 
 func PublisherPlace(r *gin.RouterGroup) {
 	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "ad-fetcher.html", nil)
+		c.HTML(http.StatusOK, "ad-fetcher.html", gin.H{
+			"api":    config.Config().Server.AdSeverExternalAPI,
+			"pub_id": c.Param("publisher_id"),
+		})
 	})
 }
 

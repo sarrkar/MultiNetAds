@@ -27,7 +27,7 @@ func Config() *config {
 		} else {
 			cfg = &config{
 				Server: serverConfig{
-					Port:        "5004",
+					Port:        "80",
 					RunMode:     "debug",
 					TemplateDir: "templates/*",
 				},

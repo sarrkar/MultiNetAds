@@ -15,6 +15,10 @@ func main() {
 
 	r.LoadHTMLGlob(config.Config().Server.TemplateDir)
 
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "index.html", nil)
+	})
+
 	r.GET("/template1", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "template1.html", nil)
 	})

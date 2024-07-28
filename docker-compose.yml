@@ -22,6 +22,8 @@ services:
       - POSTGRES_PASSWORD=Mam@d123
       - POSTGRES_USER=postgres
       - POSTGRES_DB=panel
+      - ADSERVERHOST=${HOST:-}
+      - ADSERVERPORT=5002
     depends_on:
       - panel-database
     restart: unless-stopped
@@ -30,6 +32,9 @@ services:
     build: "./AdServer"
     ports:
       - 5002:9002
+    environment:
+      - EVENTSERVERHOST=${HOST:-}
+      - EVENTSERVERPORT=5003
     depends_on:
       - panel-webserver
     restart: unless-stopped

@@ -60,60 +60,48 @@
 </head>
 <body>
     <h1>اسکریپت شما</h1>
-    <pre class="prettyprint">
-document.addEventListener('DOMContentLoaded', function() {
-    fetch('http://localhost:8080/api/ad')
-        .then(response => response.json())
-        .then(data => {
-            // نمایش عنوان و تصویر تبلیغ
-            document.getElementById('ad-title').textContent = data.title;
-            const adImage = document.getElementById('ad-image');
-            adImage.src = data.image_url;
 
-            fetch(data.impression_event, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    title: data.title,
-                    url: data.image_url
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log('Impression event sent successfully');
-            })
-            .catch(error => console.error('Error sending impression event:', error));
+    <textarea class="prettyprint" rows="10" cols="100">
+    <div class="ad-container" id="ad-container">
+    <script>
+        async function fetchAd() {
+            try {
+                const response = await fetch('{{.api}}');
+                const ad = await response.json();
+                displayAd(ad);
+                observeAdImpression(ad.impression_url+`?ad_id=${ad.id}&adv_id=${ad.advertiser_id}&pub_id=${pub_id}`);
+            } catch (error) {
+                console.error('Error fetching ad:', error);
+            }
+        }
 
-            adImage.addEventListener('click', function() {
-                fetch(data.click_event, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        title: data.title,
-                        url: data.image_url
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+        function displayAd(ad) {
+            const adContainer = document.getElementById('ad-container');
+            adContainer.innerHTML = `
+                <a href="${ad.click_url}?ad_id=${ad.id}&adv_id=${ad.advertiser_id}&pub_id=${pub_id}&redirect_url=${ad.redirect_url}" target="_blank">
+                    <img src="${ad.image_url}" alt="${ad.title}" class="ad-image">
+                    <h2 class="ad-title">${ad.title}</h2>
+                </a>
+            `;
+        }
+
+        function observeAdImpression(impressionUrl) {
+            const adContainer = document.getElementById('ad-container');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        fetch(impressionUrl);
+                        observer.unobserve(adContainer);
                     }
-                    console.log('Click event sent successfully');
-                })
-                .catch(error => console.error('Error sending click event:', error));
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching ad:', error);
-            document.getElementById('ad-title').textContent = 'Failed to load ad';
-        });
-});
-    </pre>
+                });
+            }, { threshold: 0.5 });
+
+            observer.observe(adContainer);
+        }
+        pub_id = {{.pub_id}}
+        window.onload = fetchAd;
+    </script>
+    </textarea>
 
     <div class="button-container">
         <button onclick="location.href='some-url'">برگشت به صفحه قبلی</button>
