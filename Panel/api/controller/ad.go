@@ -22,7 +22,7 @@ func NewAdController() *AdController {
 func (ctrl *AdController) GetAds(ctx *gin.Context) {
 	var ads []models.Ad
 
-	if result := ctrl.DB.Where(&models.Ad{Active: true}).Find(&ads); result.Error != nil {
+	if result := ctrl.DB.Find(&ads); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
@@ -76,6 +76,21 @@ func (ctrl *AdController) IncClick(ctx *gin.Context) {
 	ctrl.DB.Save(&pub)
 
 	ctx.Redirect(http.StatusMovedPermanently, ad.RedirectUrl)
+}
+
+func (ctrl *AdController) ToggleAdStatus(ctx *gin.Context) {
+	adId := ctx.Param("ad_id")
+	var ad models.Ad
+
+	if result := ctrl.DB.Find(&ad, adId); result.Error != nil {
+		ctx.AbortWithError(http.StatusNotFound, result.Error)
+		return
+	}
+
+	ad.Active = !ad.Active
+	ctrl.DB.Save(&ad)
+
+	ctx.JSON(http.StatusOK, gin.H{"status": "success"})
 }
 
 func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
