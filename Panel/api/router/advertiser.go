@@ -11,6 +11,7 @@ import (
 
 func advertiserAd(r *gin.RouterGroup) {
 	ctrl := controller.NewAdvertiserController()
+	adCtrl := controller.NewAdController()
 
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "my_ads.html", nil)
@@ -75,6 +76,7 @@ func advertiserAd(r *gin.RouterGroup) {
 		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(int(advertiser.ID))+"/ads/list")
 	})
 
+	r.POST("/:ad_id/toggle-status", adCtrl.ToggleAdStatus)
 }
 
 func advertiserReport(r *gin.RouterGroup) {
@@ -116,7 +118,7 @@ func advertiserFinance(r *gin.RouterGroup) {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
-		
+
 		amount, err := strconv.Atoi(c.PostForm("amount"))
 
 		if err != nil {
@@ -183,9 +185,3 @@ func Advertiser(r *gin.RouterGroup) {
 	advertiserReport(advReport)
 	advertiserFinance(advFinance)
 }
-
-
-
-
-
-

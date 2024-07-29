@@ -103,6 +103,8 @@
                 <th>هزینه</th>
                 <th>بازدید</th>
                 <th>کلیک</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
             </tr>
         </thead>
         <tbody>
@@ -120,6 +122,12 @@
                 <td>
                     {{.Click}}
                 </td>
+                <td>
+                    {{if .Active}}فعال{{else}}غیرفعال{{end}}
+                </td>
+                <td>
+                    <button onclick="toggleAdStatus({{.ID}}, {{.Active}})">{{if .Active}}غیرفعال{{else}}فعال{{end}}</button>
+                </td>
             </tr>
             {{end}}
         </tbody>
@@ -128,5 +136,21 @@
         <button onclick="history.back()">بازگشت به صفحه قبل</button>
         <a href="/" class="home-button">بازگشت به خانه</a>
     </div>
+
+    <script>
+        function toggleAdStatus(adId, currentStatus) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", `/advertiser/{{$.AdvertiserID}}/ads/${adId}/toggle-status`, true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    location.reload();
+                } else {
+                    alert('خطا در تغییر وضعیت تبلیغ');
+                }
+            };
+            xhr.send(JSON.stringify({ active: !currentStatus }));
+        }
+    </script>
 </body>
 </html>
