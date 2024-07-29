@@ -60,8 +60,8 @@ func Config() *config {
 					Host:     "localhost",
 					Port:     "5432",
 					User:     "postgres",
-					Password: "Mam@d123",
-					DbName:   "panel",
+					Password: "1234",
+					DbName:   "test",
 				},
 			}
 
