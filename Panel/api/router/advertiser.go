@@ -51,8 +51,8 @@ func advertiserAd(r *gin.RouterGroup) {
 		}
 
 		bid, err := strconv.Atoi(c.PostForm("click_amount"))
-		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+		if err != nil || bid <= 0 {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid BID value"})
 			return
 		}
 
@@ -120,9 +120,8 @@ func advertiserFinance(r *gin.RouterGroup) {
 		}
 
 		amount, err := strconv.Atoi(c.PostForm("amount"))
-
-		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+		if err != nil || amount <= 0 {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid BID value"})
 			return
 		}
 

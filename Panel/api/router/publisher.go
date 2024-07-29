@@ -77,9 +77,8 @@ func PublisherFinance(r *gin.RouterGroup) {
 		}
 
 		commission, err := strconv.Atoi(c.PostForm("commission"))
-
-		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
+		if err != nil || commission < 0 || commission > 100 {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid commission value"})
 			return
 		}
 
