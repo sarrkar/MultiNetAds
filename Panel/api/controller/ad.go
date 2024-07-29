@@ -72,6 +72,12 @@ func (ctrl *AdController) IncClick(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
+
+	commissionPercent := pub.CommissionPercent
+	if commissionPercent == 0 {
+		commissionPercent = 20
+	}
+
 	pub.Balance += (pub.CommissionPercent * ad.BID) / 100
 	ctrl.DB.Save(&pub)
 
