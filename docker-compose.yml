@@ -53,6 +53,15 @@ services:
       - 80:9004
     restart: unless-stopped
 
+  reporter:
+    build: "./Reporter"
+    environment:
+      - POSTGRES_HOST=panel-database
+      - POSTGRES_PASSWORD=Mam@d123
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=panel
+    restart: unless-stopped
+
 ##################### kafka #####################
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0

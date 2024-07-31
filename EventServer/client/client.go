@@ -44,8 +44,8 @@ type KafkaClient struct {
 
 func NewKafkaClinet() *KafkaClient {
 	return &KafkaClient{
-		kafka.NewWriter(kafka.WriterConfig{Topic: "click_events", Brokers: []string{"kafka:9092"}}),
-		kafka.NewWriter(kafka.WriterConfig{Topic: "impression_events", Brokers: []string{"kafka:9092"}}),
+		kafka.NewWriter(kafka.WriterConfig{Topic: "click_events", Brokers: []string{config.Config().Client.KafkaUrl}}),
+		kafka.NewWriter(kafka.WriterConfig{Topic: "impression_events", Brokers: []string{config.Config().Client.KafkaUrl}}),
 	}
 }
 
