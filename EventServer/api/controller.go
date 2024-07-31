@@ -9,6 +9,7 @@ import (
 )
 
 var set helper.Set = helper.NewSet()
+var clt client.Client = client.NewKafkaClinet()
 
 func ClickHandler(ctx *gin.Context) {
 	ctx.Header("Access-Control-Allow-Origin", "*")
@@ -21,7 +22,7 @@ func ClickHandler(ctx *gin.Context) {
 	if !set.Check(otlKey) {
 		set.Add(otlKey)
 		if adOK && advOK && pubOK {
-			go client.AddClick(adID, advID, pubID)
+			go clt.AddClick(adID, advID, pubID)
 		}
 	}
 
@@ -44,7 +45,7 @@ func ImpressionHandler(ctx *gin.Context) {
 
 	if !set.Check(otlKey) {
 		set.Add(otlKey)
-		go client.AdImperession(adID, advID, pubID)
+		go clt.AddImperession(adID, advID, pubID)
 	}
 
 	ctx.IndentedJSON(http.StatusOK, gin.H{

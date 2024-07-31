@@ -4,7 +4,7 @@ services:
   panel-database:
     image: postgres:14-alpine
     volumes:
-      - paneldata:/var/lib/postgresql/data
+      - panel-db:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=Mam@d123
       - POSTGRES_USER=postgres
@@ -22,7 +22,7 @@ services:
       - POSTGRES_PASSWORD=Mam@d123
       - POSTGRES_USER=postgres
       - POSTGRES_DB=panel
-      - ADSERVERHOST=${HOST:-}
+      - ADSERVERHOST=${HOST}
       - ADSERVERPORT=5002
     depends_on:
       - panel-database
@@ -33,7 +33,7 @@ services:
     ports:
       - 5002:9002
     environment:
-      - EVENTSERVERHOST=${HOST:-}
+      - EVENTSERVERHOST=${HOST}
       - EVENTSERVERPORT=5003
     depends_on:
       - panel-webserver
@@ -53,5 +53,41 @@ services:
       - 80:9004
     restart: unless-stopped
 
+##################### kafka #####################
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    restart: unless-stopped
+    volumes:
+      - zookeeper-data:/data
+      - zookeeper-logs:/log
+  kafka:
+    image: &kafka-image confluentinc/cp-server:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    restart: unless-stopped
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka-data:/opt/kafka/data
+      - kafka-docker-sock:/var/run/docker.sock
+  init-kafka:
+    image: *kafka-image
+    entrypoint: /bin/bash -c "kafka-topics --create --if-not-exists --topic click_events --replication-factor=1 --partitions=3 --bootstrap-server kafka:9092 && kafka-topics --create --if-not-exists --topic impression_events --replication-factor=1 --partitions=3 --bootstrap-server kafka:9092 && exit 0"
+    depends_on:
+      - kafka
 volumes:
-  paneldata:
+  panel-db:
+  zookeeper-data:
+  zookeeper-logs:
+  kafka-data:
+  kafka-docker-sock:
