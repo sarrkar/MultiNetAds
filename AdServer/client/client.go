@@ -24,8 +24,20 @@ type Ad struct {
 	AdvertiserID uint   `json:"advertiser_id"`
 }
 
+type Advertiser struct{
+	ID 		uint 	`gorm:"column:id; primary_key; not null" json:"id"`
+	Name 	string 	`json:"name"`
+	Balance int 	`json:"balance"`
+	Ads 	[]Ad 	`json:"ads"`
+	}	
+
 var ads []Ad = []Ad{}
 var mu sync.Mutex = sync.Mutex{}
+
+var advertiser []Advertiser = []Advertiser{}
+var mu_avertiser sync.Mutex = sync.Mutex{}
+
+
 
 func GetBestAds() Ad {
 	mu.Lock()
@@ -67,3 +79,24 @@ func getAds() error {
 	})
 	return nil
 }
+// =================================================================
+
+
+// func createAdvertiserMap(advertisers []Advertiser) map[uint]int {
+// 	advertiserMap := make(map[uint]int)
+// 	for _, advertiser := range advertisers {
+// 		advertiserMap[advertiser.ID] = advertiser.Balance
+// 	}
+// 	return advertiserMap
+// }
+
+// advertiserMap := createAdvertiserMap()
+
+
+// func checkBalanceAdvertiser(ads []Ad, advertiserMap map[uint]int){
+// 	for i, ad := range ads {
+// 		if balance, exists := advertiserMap[ad]; exists && balance < 100{
+// 			ads[i].Active = false
+// 		}
+// 	}
+// }

@@ -2,8 +2,8 @@ package router
 
 import (
 	"net/http"
+	"path/filepath"
 	"strconv"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sarrkar/chan-ta-net/panel/api/controller"
 	"github.com/sarrkar/chan-ta-net/panel/models"
@@ -40,7 +40,6 @@ func advertiserAd(r *gin.RouterGroup) {
 	r.POST("/create", func(c *gin.Context) {
 		title := c.PostForm("title")
 		referralLink := c.PostForm("referral_link")
-		imageLink := c.PostForm("image_link")
 
 		intId, err := strconv.Atoi(c.Param("advertiser_id"))
 		id := uint(intId)
@@ -55,6 +54,23 @@ func advertiserAd(r *gin.RouterGroup) {
 			return
 		}
 
+		file, err := c.FormFile("file")
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "No file is received"})
+			return
+		}
+
+		filename := filepath.Base(file.Filename)
+		filepath := filepath.Join("uploads", filename)
+
+		if err := c.SaveUploadedFile(file, filepath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to save the file"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully", "url": "/uploads/" + filename})
+		imageUrl := "/uploads/" + filename
+
 		advertiser, err := ctrl.GetAdvertiser(id)
 		if err != nil {
 			c.AbortWithError(http.StatusNotFound, err)
@@ -65,7 +81,7 @@ func advertiserAd(r *gin.RouterGroup) {
 			Title:        title,
 			BID:          bid,
 			RedirectUrl:  referralLink,
-			ImageUrl:     imageLink,
+			ImageUrl:     imageUrl,
 			Active:       true,
 			AdvertiserID: advertiser.ID,
 		}
@@ -74,7 +90,6 @@ func advertiserAd(r *gin.RouterGroup) {
 
 		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(int(advertiser.ID))+"/ads/list")
 	})
-
 }
 
 func advertiserReport(r *gin.RouterGroup) {
@@ -116,7 +131,7 @@ func advertiserFinance(r *gin.RouterGroup) {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
-		
+
 		amount, err := strconv.Atoi(c.PostForm("amount"))
 
 		if err != nil {
@@ -183,9 +198,3 @@ func Advertiser(r *gin.RouterGroup) {
 	advertiserReport(advReport)
 	advertiserFinance(advFinance)
 }
-
-
-
-
-
-

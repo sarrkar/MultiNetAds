@@ -107,7 +107,7 @@
 
     <h1>اضافه کردن تبلیغ</h1>
     
-    <form action="create" method="post">
+    <form action="create" method="post" enctype="multipart/form-data">
         <label for="title">عنوان تبلیغ:</label>
         <input type="text" id="title" name="title" required>
 
@@ -117,10 +117,13 @@
         <label for="referral_link">لینک ارجاع:</label>
         <input type="url" id="referral_link" name="referral_link">
 
-        <label for="image_link">لینک تصویر:</label>
-        <input type="url" id="image_link" name="image_link">
+        <label for="image_link">آپلود تصویر:</label>
+        <input type="file" id="file" name="file" required>
         <button type="submit">ارسال تبلیغ</button>
     </form>
+
+
+
     <div class="buttons">
         <button onclick="history.back()">بازگشت به صفحه قبل</button>
         <a href="/" class="home-button">بازگشت به خانه</a>
