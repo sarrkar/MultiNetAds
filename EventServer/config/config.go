@@ -14,6 +14,7 @@ type serverConfig struct {
 
 type clientConfig struct {
 	PanelApi string
+	KafkaUrl string
 }
 
 var cfg *config
@@ -28,6 +29,7 @@ func Config() *config {
 				},
 				Client: clientConfig{
 					PanelApi: "http://panel-webserver:9001/api/ad",
+					KafkaUrl: "kafka:9092",
 				},
 			}
 		} else {
@@ -38,6 +40,7 @@ func Config() *config {
 				},
 				Client: clientConfig{
 					PanelApi: "http://localhost:5001/api/ad",
+					KafkaUrl: "localhost:29092",
 				},
 			}
 		}
