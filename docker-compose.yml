@@ -1,57 +1,122 @@
-version: '3.9'
-
 services:
-  panel-database:
+
+##################### postgres #####################
+  database:
     image: postgres:14-alpine
     volumes:
-      - paneldata:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=Mam@d123
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=panel
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
     restart: unless-stopped
 
+
+##################### kafka #####################
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    restart: unless-stopped
+    volumes:
+      - zookeeper-data:/data
+      - zookeeper-logs:/log
+  kafka:
+    image: &kafka-image confluentinc/cp-server:7.5.0
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    restart: unless-stopped
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka-data:/opt/kafka/data
+      - kafka-docker-sock:/var/run/docker.sock
+  init-kafka:
+    image: *kafka-image
+    entrypoint: /bin/bash -c "kafka-topics --create --if-not-exists --topic click_events --replication-factor=1 --partitions=3 --bootstrap-server kafka:9092 && kafka-topics --create --if-not-exists --topic impression_events --replication-factor=1 --partitions=3 --bootstrap-server kafka:9092 && exit 0"
+    depends_on:
+      - kafka
+
+##################### app #####################
   panel-webserver:
-    build: "./Panel"
+    build:
+      context: .
+      dockerfile: ./panel/Dockerfile
     ports:
       - 8080:9001
+    volumes:
+      - panel_static:/app/panel/api/static/uploads
     environment:
-      - POSTGRES_HOST=panel-database
-      - POSTGRES_PASSWORD=Mam@d123
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=panel
-      - ADSERVERHOST=${HOST:-}
+      - POSTGRES_HOST=database
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - ADSERVERHOST=${HOST}
       - ADSERVERPORT=5002
     depends_on:
-      - panel-database
+      - database
     restart: unless-stopped
 
   ad-server-webserver:
-    build: "./AdServer"
+    build:
+      context: .
+      dockerfile: ./adserver/Dockerfile
     ports:
       - 5002:5002
     environment:
-      - EVENTSERVERHOST=${HOST:-}
+      - EVENTSERVERHOST=${HOST}
       - EVENTSERVERPORT=5003
     depends_on:
       - panel-webserver
     restart: unless-stopped
       
   event-server-webserver:
-    build: "./EventServer"
+    build:
+      context: .
+      dockerfile: ./eventserver/Dockerfile
     ports:
       - 5003:9003
     depends_on:
       - panel-webserver
+      - kafka
     restart: unless-stopped
       
   publisher-site-webserver:
-    build: "./PublisherWebsite"
+    build:
+      context: .
+      dockerfile: ./publisherwebsite/Dockerfile
     ports:
       - 80:9004
     restart: unless-stopped
 
+  reporter:
+    build:
+      context: .
+      dockerfile: ./reporter/Dockerfile
+    environment:
+      - POSTGRES_HOST=database
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+    depends_on:
+      - kafka
+      - database
+    restart: unless-stopped
+
 volumes:
-  paneldata:
+  db-data:
+  zookeeper-data:
+  zookeeper-logs:
+  kafka-data:
+  kafka-docker-sock:
+  panel_static:
