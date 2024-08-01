@@ -5,7 +5,7 @@ type Ad struct {
 	Title        string `json:"title"`
 	ImageUrl     string `json:"image_url"`
 	RedirectUrl  string `json:"redirect_url"`
-	BID          int    `gorm:";column:bid" json:"bid"`
+	BID          int    `gorm:"column:bid" json:"bid"`
 	Active       bool   `json:"active"`
 	Impression   uint   `json:"impression"`
 	Click        uint   `json:"click"`

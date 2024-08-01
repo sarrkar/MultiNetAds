@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"sync"
 
+	"github.com/sarrkar/chan-ta-net/common/models"
 	"github.com/sarrkar/chan-ta-net/reporter/config"
-	"github.com/sarrkar/chan-ta-net/reporter/database"
-	"github.com/sarrkar/chan-ta-net/reporter/models"
 	"github.com/segmentio/kafka-go"
 )
 
@@ -21,6 +21,10 @@ type KafkaMessage struct {
 type Consumer struct {
 	ClickConsumer      *kafka.Reader
 	ImpressionConsumer *kafka.Reader
+	Lock               sync.Mutex
+	Ads                map[uint]*models.Ad
+	Advs               map[uint]*models.Advertiser
+	Pubs               map[uint]*models.Publisher
 }
 
 func NewConsumer() *Consumer {
@@ -35,6 +39,10 @@ func NewConsumer() *Consumer {
 			GroupID: "reporter",
 			Topic:   "impression_events",
 		}),
+		sync.Mutex{},
+		make(map[uint]*models.Ad),
+		make(map[uint]*models.Advertiser),
+		make(map[uint]*models.Publisher),
 	}
 }
 
@@ -47,7 +55,7 @@ func (c *Consumer) GetClick() {
 		fmt.Printf("consume CLICK at topic: %v partition: %v offset: %v value: %s \n", msg.Topic, msg.Partition, msg.Offset, string(msg.Value))
 		var km KafkaMessage
 		json.Unmarshal(msg.Value, &km)
-		addClick(km)
+		c.addClick(km)
 	}
 
 	if err := c.ClickConsumer.Close(); err != nil {
@@ -55,22 +63,11 @@ func (c *Consumer) GetClick() {
 	}
 }
 
-func addClick(m KafkaMessage) {
-	var ad models.Ad
-	var adv models.Advertiser
-	var pub models.Publisher
-
-	DB := database.GetDb()
-	DB.First(&ad, m.AdID)
-	ad.Click++
-	DB.Save(&ad)
-	DB.First(&adv, m.AdvID)
-	adv.Balance -= ad.BID
-	DB.Save(&adv)
-	DB.First(&pub, m.PubID)
-	pub.Balance += (pub.CommissionPercent * ad.BID) / 100
-	// pub.Click++
-	DB.Save(&pub)
+func (c *Consumer) addClick(m KafkaMessage) {
+	c.Ads[m.AdID].Click++
+	c.Advs[m.AdvID].Balance -= c.Ads[m.AdID].BID
+	c.Pubs[m.PubID].Balance += (c.Pubs[m.PubID].CommissionPercent * c.Ads[m.AdID].BID) / 100
+	c.Pubs[m.PubID].Click++
 }
 
 func (c *Consumer) GetImpression() {
@@ -82,7 +79,7 @@ func (c *Consumer) GetImpression() {
 		fmt.Printf("consume IMPRRESION at topic: %v partition: %v offset: %v value: %s \n", msg.Topic, msg.Partition, msg.Offset, string(msg.Value))
 		var km KafkaMessage
 		json.Unmarshal(msg.Value, &km)
-		addImpression(km)
+		c.addImpression(km)
 	}
 
 	if err := c.ImpressionConsumer.Close(); err != nil {
@@ -90,15 +87,7 @@ func (c *Consumer) GetImpression() {
 	}
 }
 
-func addImpression(m KafkaMessage) {
-	var ad models.Ad
-	// var pub models.Publisher
-
-	DB := database.GetDb()
-	DB.First(&ad, m.AdID)
-	ad.Impression++
-	DB.Save(&ad)
-	// DB.First(&pub, m.PubID)
-	// pub.Impression++
-	// DB.Save(&pub)
+func (c *Consumer) addImpression(m KafkaMessage) {
+	c.Ads[m.AdID].Impression++
+	c.Pubs[m.PubID].Impression++
 }
