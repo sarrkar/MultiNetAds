@@ -26,16 +26,16 @@ func PostgresConfig() *postgresConfig {
 				SslMode:  "disable",
 				TimeZone: "Asia/Tehran",
 			}
-		}
-	} else {
-		cfg = &postgresConfig{
-			Host:     "localhost",
-			Port:     "5432",
-			User:     "postgres",
-			Password: "Mam@d123",
-			DbName:   "panel",
-			SslMode:  "disable",
-			TimeZone: "Asia/Tehran",
+		} else {
+			cfg = &postgresConfig{
+				Host:     "localhost",
+				Port:     "5432",
+				User:     "postgres",
+				Password: "Mam@d123",
+				DbName:   "panel",
+				SslMode:  "disable",
+				TimeZone: "Asia/Tehran",
+			}
 		}
 	}
 	return cfg
