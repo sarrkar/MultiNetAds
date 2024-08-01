@@ -37,10 +37,10 @@ func (ctrl *PublisherController) GetPublisherWithAds(id uint) (publisher *models
 	return
 }
 
-func (ctrl *PublisherController) NewPublisher(name string) (*models.Publisher, error) {
-	publisher := &models.Publisher{}
-	if result := ctrl.DB.Where(&models.Publisher{Name: name}).FirstOrCreate(publisher); result.Error != nil {
+func (ctrl *PublisherController) NewPublisher(name, category string) (*models.Publisher, error) {
+	var publisher models.Publisher
+	if result := ctrl.DB.Where(&models.Publisher{Name: name, Category: category}).FirstOrCreate(&publisher); result.Error != nil {
 		return nil, result.Error
 	}
-	return publisher, nil
+	return &publisher, nil
 }

@@ -18,18 +18,10 @@ func PublisherPlace(r *gin.RouterGroup) {
 	})
 }
 
-func PublisherReport(r *gin.RouterGroup) {
-	// TODO
-}
-
 func PublisherFinance(r *gin.RouterGroup) {
 	ctrl := controller.NewPublisherController()
 
 	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "pub_finance.html", nil)
-	})
-
-	r.GET("/balance", func(c *gin.Context) {
 		uid, err := strconv.Atoi(c.Param("publisher_id"))
 		id := uint(uid)
 		if err != nil {
@@ -43,7 +35,7 @@ func PublisherFinance(r *gin.RouterGroup) {
 			return
 		}
 
-		c.HTML(http.StatusOK, "balance.html", gin.H{"Name": publisher.Name, "Balance": publisher.Balance})
+		c.HTML(http.StatusOK, "pub_finance.html", gin.H{"Name": publisher.Name, "Balance": publisher.Balance})
 	})
 
 	r.GET("/checkout", func(c *gin.Context) {
@@ -108,7 +100,13 @@ func Publisher(r *gin.RouterGroup) {
 
 	r.POST("/submit-name", func(c *gin.Context) {
 		name := c.PostForm("name")
-		publisher, err := ctrl.NewPublisher(name)
+		category := c.PostForm("category")
+		customCategory := c.PostForm("custom_category")
+
+		if customCategory != "" {
+			category = customCategory
+		}
+		publisher, err := ctrl.NewPublisher(name, category)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
@@ -133,10 +131,8 @@ func Publisher(r *gin.RouterGroup) {
 	})
 
 	pubPlace := r.Group("/:publisher_id/add-script")
-	pubReport := r.Group("/:publisher_id/reports")
 	pubFinance := r.Group("/:publisher_id/finance")
 
 	PublisherPlace(pubPlace)
-	PublisherReport(pubReport)
 	PublisherFinance(pubFinance)
 }

@@ -7,7 +7,15 @@
     <link rel="stylesheet" href="../static/css/style.css">
 </head>
 <body>
-    <h1>صفحه تبلیغ کننده</h1>
+    <h1>تبلیغ کنندگان</h1>
+    <ul>
+        {{range .Advertisers}}
+        <li>
+            <a href="{{.ID}}">{{.Name}}</a>
+        </li>
+        {{end}}
+    </ul>
+    <h2>تبلیغ کننده جدید</h2>
     <form action="submit-name" method="post">
         <label for="name">نام خود را وارد کنید:</label>
         <input type="text" id="name" name="name" required>

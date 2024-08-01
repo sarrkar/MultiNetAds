@@ -19,24 +19,19 @@ func main() {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 
-	r.GET("/template1", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "template1.html", nil)
-	})
+	r.GET("/template/:publisher_id", func(c *gin.Context) {
+		publisherID := c.Param("publisher_id")
+		title := "default"
 
-	r.GET("/template2", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "template2.html", nil)
-	})
+		if publisherID == "1" {
+			title = "تکنولایف تکنولوژی در یک قدمی تو"
+		} else if publisherID == "2" {
+			title = "آموزش ریاضی سوم راهنمایی برای کودکان استثنایی"
+		} else if publisherID == "3" {
+			title = "ورزش 3 برای سلامتی و هیجان"
+		}
 
-	r.GET("/template3", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "template3.html", nil)
-	})
-
-	r.GET("/template4", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "template4.html", nil)
-	})
-
-	r.GET("/template5", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "template5.html", nil)
+		c.HTML(http.StatusOK, "template.html", gin.H{"PublisherID": publisherID, "Title": title})
 	})
 
 	err := r.Run(fmt.Sprintf(":%s", config.Config().Server.Port))

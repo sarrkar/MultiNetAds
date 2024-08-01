@@ -18,9 +18,10 @@ type serverConfig struct {
 }
 
 type clientConfig struct {
-	PanelApi string
-	Period   time.Duration
-	Retry    time.Duration
+	PanelApi     string
+	PublisherApi string
+	Period       time.Duration
+	Retry        time.Duration
 }
 
 var cfg *config
@@ -32,15 +33,16 @@ func Config() *config {
 		if os.Getenv("APP_ENV") == "docker" {
 			cfg = &config{
 				Server: serverConfig{
-					Port:                   "9002",
+					Port:                   "5002",
 					RunMode:                "debug",
 					EventSeverExternalHost: host + ":" + port,
 					OTLlength:              10,
 				},
 				Client: clientConfig{
-					PanelApi: "http://panel-webserver:9001/api/ad/all_ads",
-					Period:   10 * time.Minute,
-					Retry:    5 * time.Second,
+					PanelApi:     "http://panel-webserver:9001/api/ad/all_ads",
+					PublisherApi: "http://panel-webserver:9001/api/publisher/all_publishers",
+					Period:       10 * time.Minute,
+					Retry:        5 * time.Second,
 				},
 			}
 		} else {
@@ -52,9 +54,10 @@ func Config() *config {
 					OTLlength:              10,
 				},
 				Client: clientConfig{
-					PanelApi: "http://localhost:5001/api/ad/all_ads",
-					Period:   1 * time.Minute,
-					Retry:    5 * time.Second,
+					PanelApi:     "http://localhost:5001/api/ad/all_ads",
+					PublisherApi: "http://localhost:5001/api/publisher/all_publishers",
+					Period:       1 * time.Minute,
+					Retry:        5 * time.Second,
 				},
 			}
 		}

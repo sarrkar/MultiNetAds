@@ -1,13 +1,14 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publishers List</title>
 </head>
 <body>
-    <a href="/template1">template1</a><br/>
-    <a href="/template2">template2</a><br/>
-    <a href="/template3">template3</a><br/>
-    <a href="/template4">template4</a><br/>
-    <a href="/template5">template5</a><br/>
+    <h1>Publishers List</h1>
+    {{range .Publishers}}
+    <a href="/template/{{.}}">Template {{.}}</a><br/>
+    {{end}}
 </body>
 </html>

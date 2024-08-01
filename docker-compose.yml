@@ -31,7 +31,7 @@ services:
   ad-server-webserver:
     build: "./AdServer"
     ports:
-      - 5002:9002
+      - 5002:5002
     environment:
       - EVENTSERVERHOST=${HOST:-}
       - EVENTSERVERPORT=5003
