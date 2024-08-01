@@ -55,35 +55,6 @@ func PublisherFinance(r *gin.RouterGroup) {
 
 		c.HTML(http.StatusOK, "checkout.html", nil)
 	})
-
-	r.GET("/commission", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "commission.html", nil)
-	})
-
-	r.POST("/update-commission", func(c *gin.Context) {
-		intId, err := strconv.Atoi(c.Param("publisher_id"))
-		id := uint(intId)
-		if err != nil {
-			c.AbortWithError(http.StatusBadRequest, err)
-			return
-		}
-
-		commission, err := strconv.Atoi(c.PostForm("commission"))
-		if err != nil || commission < 0 || commission > 100 {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid commission value"})
-			return
-		}
-
-		publisher, err := ctrl.GetPublisher(id)
-		if err != nil {
-			c.AbortWithError(http.StatusNotFound, err)
-			return
-		}
-		publisher.CommissionPercent = commission
-		ctrl.DB.Save(publisher)
-
-		c.Redirect(http.StatusFound, "/publisher/"+strconv.Itoa(int(publisher.ID))+"/finance/balance")
-	})
 }
 
 func Publisher(r *gin.RouterGroup) {

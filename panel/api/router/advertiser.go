@@ -31,6 +31,10 @@ func advertiserAd(r *gin.RouterGroup) {
 			return
 		}
 
+		for i := range advertiser.Ads {
+			advertiser.Ads[i].Budget -= advertiser.Ads[i].BID * int(advertiser.Ads[i].Click)
+		}
+
 		c.HTML(http.StatusOK, "list_advertisement.html", gin.H{"Ads": advertiser.Ads})
 	})
 
@@ -62,9 +66,20 @@ func advertiserAd(r *gin.RouterGroup) {
 			return
 		}
 
+		budget, err := strconv.Atoi(c.PostForm("budget"))
+		if err != nil || bid <= 0 {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Budget value"})
+			return
+		}
+
 		advertiser, err := ctrl.GetAdvertiser(id)
 		if err != nil {
 			c.AbortWithError(http.StatusNotFound, err)
+			return
+		}
+
+		if budget > 2*advertiser.Balance {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Buget more than twice the balance"})
 			return
 		}
 
@@ -76,6 +91,7 @@ func advertiserAd(r *gin.RouterGroup) {
 			Active:       true,
 			AdvertiserID: advertiser.ID,
 			Category:     category,
+			Budget:       budget,
 		}
 
 		ctrl.DB.Create(ad)
