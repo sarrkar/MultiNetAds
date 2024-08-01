@@ -42,6 +42,12 @@ func advertiserAd(r *gin.RouterGroup) {
 		title := c.PostForm("title")
 		referralLink := c.PostForm("referral_link")
 		imageLink := c.PostForm("image_link")
+		category := c.PostForm("category")
+		customCategory := c.PostForm("custom_category")
+
+		if customCategory != "" {
+			category = customCategory
+		}
 
 		intId, err := strconv.Atoi(c.Param("advertiser_id"))
 		id := uint(intId)
@@ -69,6 +75,7 @@ func advertiserAd(r *gin.RouterGroup) {
 			ImageUrl:     imageLink,
 			Active:       true,
 			AdvertiserID: advertiser.ID,
+			Category:     category,
 		}
 
 		ctrl.DB.Create(ad)
@@ -79,18 +86,10 @@ func advertiserAd(r *gin.RouterGroup) {
 	r.POST("/:ad_id/toggle-status", adCtrl.ToggleAdStatus)
 }
 
-func advertiserReport(r *gin.RouterGroup) {
-
-}
-
 func advertiserFinance(r *gin.RouterGroup) {
 	ctrl := controller.NewAdvertiserController()
 
 	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "my_finance.html", nil)
-	})
-
-	r.GET("/balance", func(c *gin.Context) {
 		intId, err := strconv.Atoi(c.Param("advertiser_id"))
 		id := uint(intId)
 		if err != nil {
@@ -104,7 +103,7 @@ func advertiserFinance(r *gin.RouterGroup) {
 			return
 		}
 
-		c.HTML(http.StatusOK, "balance.html", gin.H{"Name": advertiser.Name, "Balance": advertiser.Balance})
+		c.HTML(http.StatusOK, "my_finance.html", gin.H{"Name": advertiser.Name, "Balance": advertiser.Balance})
 	})
 
 	r.GET("/payment", func(c *gin.Context) {
@@ -133,7 +132,7 @@ func advertiserFinance(r *gin.RouterGroup) {
 		advertiser.Balance += amount
 		ctrl.DB.Save(advertiser)
 
-		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(int(advertiser.ID))+"/finance/balance")
+		c.Redirect(http.StatusFound, "/advertiser/"+strconv.Itoa(int(advertiser.ID))+"/finance/")
 	})
 
 }
@@ -177,10 +176,8 @@ func Advertiser(r *gin.RouterGroup) {
 	})
 
 	advAds := r.Group("/:advertiser_id/ads")
-	advReport := r.Group("/:advertiser_id/reports")
 	advFinance := r.Group("/:advertiser_id/finance")
 
 	advertiserAd(advAds)
-	advertiserReport(advReport)
 	advertiserFinance(advFinance)
 }

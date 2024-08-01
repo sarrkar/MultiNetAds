@@ -6,11 +6,23 @@
     <title>publisher</title>
     <link rel="stylesheet" href="../static/css/style.css">
 
+    <script>
+        function toggleCustomCategory() {
+            var categorySelect = document.getElementById("category");
+            var customCategoryInput = document.getElementById("custom_category");
+            if (categorySelect.value === "other") {
+                customCategoryInput.style.display = "block";
+            } else {
+                customCategoryInput.style.display = "none";
+                customCategoryInput.value = "";
+            }
+        }
+    </script>
 </head>
 <body>
-    <h1>publisher</h1>
+    <h1>Publisher</h1>
     <ul>
-        {{range .Publisher}}
+        {{range .Publishers}}
         <li>
             <a href="{{.ID}}">{{.Name}}</a>
         </li>
@@ -19,6 +31,19 @@
     <form action="submit-name" method="post">
         <label for="name">نام خود را وارد کنید:</label>
         <input type="text" id="name" name="name" required>
+
+        <label for="category">دسته بندی:</label>
+        <select id="category" name="category" required onchange="toggleCustomCategory()">
+            <option value="technology">تکنولوژی</option>
+            <option value="health">سلامت</option>
+            <option value="education">آموزش</option>
+            <option value="entertainment">سرگرمی</option>
+            <option value="other">سایر</option>
+        </select>
+
+        <label for="custom_category" style="display: none;">دسته بندی سفارشی:</label>
+        <input type="text" id="custom_category" name="custom_category" style="display: none;">
+
         <button type="submit">ارسال</button>
     </form>
 </body>

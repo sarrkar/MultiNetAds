@@ -46,7 +46,9 @@ func RegisterRoutes(r *gin.Engine) {
 	api := r.Group("/api")
 	{
 		Ad := api.Group("/ad")
+		Pub := api.Group("/publisher")
 		router.Ad(Ad)
+		router.Pub(Pub)
 	}
 
 }

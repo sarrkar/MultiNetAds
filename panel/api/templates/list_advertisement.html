@@ -100,6 +100,7 @@
         <thead>
             <tr>
                 <th>عنوان</th>
+                <th>دسته بندی</th>
                 <th>هزینه</th>
                 <th>بازدید</th>
                 <th>کلیک</th>
@@ -112,6 +113,9 @@
             <tr>
                 <td>
                     <a href="{{.RedirectUrl}}" target="_blank">{{.Title}}</a>
+                </td>
+                <td>
+                    {{.Category}} 
                 </td>
                 <td>
                     {{.BID}} تومان

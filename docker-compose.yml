@@ -4,7 +4,7 @@ services:
   database:
     image: postgres:14-alpine
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - paneldata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -72,7 +72,7 @@ services:
       context: .
       dockerfile: ./adserver/Dockerfile
     ports:
-      - 5002:9002
+      - 5002:5002
     environment:
       - EVENTSERVERHOST=${HOST}
       - EVENTSERVERPORT=5003
@@ -114,7 +114,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  db-data:
+  paneldata:
   zookeeper-data:
   zookeeper-logs:
   kafka-data:

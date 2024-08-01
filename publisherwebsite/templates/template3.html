@@ -38,7 +38,7 @@
     <script>
         async function fetchAd() {
             try {
-                const response = await fetch('http://localhost:5002/api/ad');
+                const response = await fetch(`http://localhost:5002/api/ad?publisher_id=${pub_id}&title=${document.title}`);
                 const ad = await response.json();
                 displayAd(ad);
                 observeAdImpression(ad.impression_url+`?ad_id=${ad.id}&adv_id=${ad.advertiser_id}&pub_id=${pub_id}`);

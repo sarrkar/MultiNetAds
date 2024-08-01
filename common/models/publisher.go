@@ -5,4 +5,5 @@ type Publisher struct {
 	Name              string `json:"name"`
 	Balance           int    `json:"balance"`
 	CommissionPercent int    `json:"Commission_percent"`
+	Category          string `json:"category"`
 }
