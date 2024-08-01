@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,7 @@ func NewAdController() *AdController {
 func (ctrl *AdController) GetAds(ctx *gin.Context) {
 	var ads []models.Ad
 
-	if result := ctrl.DB.Where(&models.Ad{Active: true}).Find(&ads); result.Error != nil {
+	if result := ctrl.DB.Where(&models.Ad{Active: true}).Where("budget - click * bid > ?", 0).Find(&ads); result.Error != nil {
 		ctx.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
@@ -49,6 +50,7 @@ func (ctrl *AdController) IncClick(ctx *gin.Context) {
 	adId := ctx.Param("ad_id")
 	advId := ctx.Param("adv_id")
 	pubId := ctx.Param("pub_id")
+	fmt.Printf("click %s %s %s", adId, advId, pubId)
 
 	var ad models.Ad
 	var adv models.Advertiser

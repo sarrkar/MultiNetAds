@@ -10,4 +10,5 @@ type Ad struct {
 	Impression   uint   `json:"impression"`
 	Click        uint   `json:"click"`
 	AdvertiserID uint   `json:"advertiser_id"`
+	Budget       int    `json:"budget"`
 }

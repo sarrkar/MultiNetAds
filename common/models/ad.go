@@ -11,4 +11,5 @@ type Ad struct {
 	Click        uint   `json:"click"`
 	AdvertiserID uint   `json:"advertiser_id"`
 	Category     string `json:"category"`
+	Budget       int    `json:"budget"`
 }
