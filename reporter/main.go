@@ -15,6 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	database.Migrate()
 
 	db := database.GetDb()
 	c := consumer.NewConsumer()

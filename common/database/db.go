@@ -43,11 +43,10 @@ func GetDb() *gorm.DB {
 }
 
 func Migrate() {
-	dbClient.AutoMigrate(
-		&models.Ad{},
-		&models.Advertiser{},
-		&models.Publisher{},
-	)
+	dbClient.AutoMigrate(models.Ad{})
+	dbClient.AutoMigrate(models.Advertiser{})
+	dbClient.AutoMigrate(models.Publisher{})
+
 	log.Println("tables migrated")
 }
 
