@@ -31,6 +31,10 @@ func advertiserAd(r *gin.RouterGroup) {
 			return
 		}
 
+		for i := range advertiser.Ads {
+			advertiser.Ads[i].Budget -= advertiser.Ads[i].BID * int(advertiser.Ads[i].Click)
+		}
+
 		c.HTML(http.StatusOK, "list_advertisement.html", gin.H{"Ads": advertiser.Ads})
 	})
 
