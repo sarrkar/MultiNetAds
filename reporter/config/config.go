@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"time"
 )
 
 type config struct {
@@ -10,6 +11,8 @@ type config struct {
 
 type consumerConfig struct {
 	KafkaUrl string
+	Period   time.Duration
+	Retry    time.Duration
 }
 
 var cfg *config
@@ -20,12 +23,16 @@ func Config() *config {
 			cfg = &config{
 				Client: consumerConfig{
 					KafkaUrl: "kafka:9092",
+					Retry:    5 * time.Second,
+					Period:   1 * time.Minute,
 				},
 			}
 		} else {
 			cfg = &config{
 				Client: consumerConfig{
 					KafkaUrl: "localhost:29092",
+					Retry:    5 * time.Second,
+					Period:   1 * time.Minute,
 				},
 			}
 		}
