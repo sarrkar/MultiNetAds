@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد کاربر</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+    <div>
+        <h2>کاربر {{.Name}} خوش آمدید. موجودی شما: {{.Balance}} تومان</h2>
+        <h3>افزایش موجودی:</h3>
+        <form action="{{.ID}}/add_credit" method="post">
+            <input type="number" name="amount" placeholder="مقدار" required min="0">
+            <button type="submit">افزایش موجودی</button>
+        </form>
+        <h3>مشاهده تبلیغ</h3>
+        <script>
+            function CTR(Click, Impression) {
+                if (Impression == 0) return 0;
+                return Click/Impression;
+    
+            }
+        </script>
+        <table>
+            <thead>
+                <tr>
+                    <th>تبلیغ</th>
+                    <th>دسته بندی</th>
+                    <th>BID</th>
+                    <th>بازدید</th>
+                    <th>کلیک</th>
+                    <th>CTR</th>
+                    <th>مبلغ خرج شده</th>
+                    <th>بودجه باقی مانده</th>
+                    <th>وضعیت</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Ads}}
+                <tr>
+                    <td>
+                        <a href="{{.RedirectUrl}}" target="_blank"><img src={{.ImageUrl}} alt="ad image" height="100px"><br>{{.Title}}</a>
+                    </td>
+                    <td>
+                        {{.Category}}
+                    </td>
+                    <td>
+                        {{.BID}} تومان
+                    </td>
+                    <td>
+                        {{.Impression}}
+                    </td>
+                    <td>
+                        {{.Click}}
+                    </td>
+                    <td>
+                        <script>document.write(CTR({{.Click}}, {{.Impression}}))</script>
+                    </td>
+                    <td>
+                        <script>document.write({{.BID}}*{{.Click}})</script> تومان
+                    </td>
+                    <td>
+                        {{.Budget}} تومان
+                    </td>
+                    <td>
+                        {{if .Active}}فعال{{else}}غیرفعال{{end}}
+                    </td>
+                    <td>
+                        <button onclick="toggleAdStatus({{.ID}}, {{.Active}})">{{if
+                            .Active}}غیرفعال{{else}}فعال{{end}}</button>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+
+        <h3>اضافه کردن تبلیغ</h3>
+
+        <form action="{{.ID}}/ad_create" method="post" enctype="multipart/form-data">
+            <label for="title">عنوان تبلیغ:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="click_amount">مبلغ پرداختی جهت هر کلیک:</label>
+            <input type="number" id="click_amount" name="click_amount" step="100" required>
+
+            <label for="budget">بودجه:</label>
+            <input type="number" id="budget" name="budget" step="1000" required>
+
+            <label for="referral_link">لینک ارجاع:</label>
+            <input type="url" id="referral_link" name="referral_link" required>
+
+            <label for="image_file">آپلود تصویر:</label>
+            <input type="file" id="image_file" name="image_file" required>
+    
+            <label for="category">دسته بندی:</label>
+            <select id="category" name="category" required onchange="toggleCustomCategory()">
+                <option value="technology">تکنولوژی</option>
+                <option value="health">سلامت</option>
+                <option value="education">آموزش</option>
+                <option value="entertainment">سرگرمی</option>
+                <option value="other">سایر</option>
+            </select>
+            <input type="text" id="custom_category" name="custom_category" style="display: none;">
+
+            <button type="submit">ارسال تبلیغ</button>
+        </form>
+
+    </div>
+
+    <script>
+
+        function toggleAdStatus(adId, currentStatus) {
+
+            fetch(`${location.origin}/api/toggle_status/${adId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json;charset=UTF-8"
+                },
+            })
+                .then((response) => location.reload())
+                .catch((error) => alert('خطا در تغییر وضعیت تبلیغ'));
+
+        }
+
+        function toggleCustomCategory() {
+            var categorySelect = document.getElementById("category");
+            var customCategoryInput = document.getElementById("custom_category");
+            if (categorySelect.value === "other") {
+                customCategoryInput.style.display = "block";
+                customCategoryInput.required = true;
+            } else {
+                customCategoryInput.style.display = "none";
+                customCategoryInput.required = false;
+                customCategoryInput.value = "";
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -10,46 +10,73 @@ import (
 	"gorm.io/gorm"
 )
 
-type AdController struct {
+type ApiController struct {
 	DB *gorm.DB
 }
 
-func NewAdController() *AdController {
-	return &AdController{
+func NewApiController() *ApiController {
+	return &ApiController{
 		DB: database.GetDb(),
 	}
 }
 
-func (ctrl *AdController) GetAds(ctx *gin.Context) {
+func (ctrl *ApiController) GetAds(c *gin.Context) {
 	var ads []models.Ad
 
 	if result := ctrl.DB.Where(&models.Ad{Active: true}).Where("budget - click * bid > ?", 0).Find(&ads); result.Error != nil {
-		ctx.AbortWithError(http.StatusNotFound, result.Error)
+		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, &ads)
+	c.JSON(http.StatusOK, &ads)
 }
 
-func (ctrl *AdController) IncImpression(ctx *gin.Context) {
-	adId := ctx.Param("ad_id")
+func (ctrl *ApiController) GetPubs(c *gin.Context) {
+	var publishers []*models.Publisher
+	if result := ctrl.DB.Find(&publishers); result.Error != nil {
+		c.AbortWithError(http.StatusBadRequest, result.Error)
+		return
+	}
+	c.JSON(http.StatusOK, publishers)
+}
+
+func (ctrl *ApiController) GetAdvs(c *gin.Context) {
+	var advertisers []*models.Advertiser
+	if result := ctrl.DB.Find(&advertisers); result.Error != nil {
+		c.AbortWithError(http.StatusBadRequest, result.Error)
+		return
+	}
+	c.JSON(http.StatusOK, advertisers)
+}
+
+func (ctrl *ApiController) IncImpression(c *gin.Context) {
+	adId := c.Param("ad_id")
+	pubId := c.Param("pub_id")
 	var ad models.Ad
+	var pub models.Publisher
 
 	if result := ctrl.DB.First(&ad, adId); result.Error != nil {
-		ctx.AbortWithError(http.StatusNotFound, result.Error)
+		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
 
 	ad.Impression++
 	ctrl.DB.Save(&ad)
 
-	ctx.JSON(http.StatusOK, &ad)
+	if result := ctrl.DB.First(&pub, pubId); result.Error != nil {
+		c.AbortWithError(http.StatusNotFound, result.Error)
+		return
+	}
+	pub.Impression++
+	ctrl.DB.Save(&pub)
+
+	c.JSON(http.StatusOK, &ad)
 }
 
-func (ctrl *AdController) IncClick(ctx *gin.Context) {
-	adId := ctx.Param("ad_id")
-	advId := ctx.Param("adv_id")
-	pubId := ctx.Param("pub_id")
+func (ctrl *ApiController) IncClick(c *gin.Context) {
+	adId := c.Param("ad_id")
+	advId := c.Param("adv_id")
+	pubId := c.Param("pub_id")
 	fmt.Printf("click %s %s %s", adId, advId, pubId)
 
 	var ad models.Ad
@@ -57,46 +84,47 @@ func (ctrl *AdController) IncClick(ctx *gin.Context) {
 	var pub models.Publisher
 
 	if result := ctrl.DB.First(&ad, adId); result.Error != nil {
-		ctx.AbortWithError(http.StatusNotFound, result.Error)
+		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
 	ad.Click++
 	ctrl.DB.Save(&ad)
 
 	if result := ctrl.DB.First(&adv, advId); result.Error != nil {
-		ctx.AbortWithError(http.StatusNotFound, result.Error)
+		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
 	adv.Balance -= ad.BID
 	ctrl.DB.Save(&adv)
 
 	if result := ctrl.DB.First(&pub, pubId); result.Error != nil {
-		ctx.AbortWithError(http.StatusNotFound, result.Error)
+		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
 
 	pub.Balance += (pub.CommissionPercent * ad.BID) / 100
+	pub.Click++
 	ctrl.DB.Save(&pub)
 
-	ctx.Redirect(http.StatusMovedPermanently, ad.RedirectUrl)
+	c.Redirect(http.StatusMovedPermanently, ad.RedirectUrl)
 }
 
-func (ctrl *AdController) ToggleAdStatus(ctx *gin.Context) {
-	adId := ctx.Param("ad_id")
+func (ctrl *ApiController) ToggleAdStatus(c *gin.Context) {
+	adId := c.Param("ad_id")
 	var ad models.Ad
 
 	if result := ctrl.DB.Find(&ad, adId); result.Error != nil {
-		ctx.AbortWithError(http.StatusNotFound, result.Error)
+		c.AbortWithError(http.StatusNotFound, result.Error)
 		return
 	}
 
 	ad.Active = !ad.Active
 	ctrl.DB.Save(&ad)
 
-	ctx.JSON(http.StatusOK, gin.H{"status": "success"})
+	c.JSON(http.StatusOK, gin.H{"status": "success"})
 }
 
-func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
+func (ctrl *ApiController) CreateMockData(c *gin.Context) {
 
 	ctrl.DB.Exec("DELETE FROM ads")
 	ctrl.DB.Exec("DELETE FROM advertisers")
@@ -113,8 +141,8 @@ func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 					RedirectUrl: "https://www.google.com/",
 					BID:         1000,
 					Active:      true,
-					Impression:  0,
-					Click:       0,
+					Category:    "education",
+					Budget:      20000,
 				},
 				{
 					Title:       "title2 adv1",
@@ -122,8 +150,8 @@ func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 					RedirectUrl: "https://www.varzesh3.com/",
 					BID:         2000,
 					Active:      true,
-					Impression:  0,
-					Click:       0,
+					Category:    "technology",
+					Budget:      20000,
 				},
 				{
 					Title:       "title3 adv1",
@@ -131,8 +159,8 @@ func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 					RedirectUrl: "https://www.varzesh3.com/",
 					BID:         2000,
 					Active:      false,
-					Impression:  0,
-					Click:       0,
+					Category:    "education",
+					Budget:      20000,
 				},
 			},
 		},
@@ -146,8 +174,8 @@ func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 					RedirectUrl: "https://www.google.com/",
 					BID:         500,
 					Active:      true,
-					Impression:  0,
-					Click:       0,
+					Category:    "technology",
+					Budget:      20000,
 				},
 				{
 					Title:       "title2 adv2",
@@ -155,8 +183,8 @@ func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 					RedirectUrl: "https://www.varzesh3.com/",
 					BID:         1500,
 					Active:      true,
-					Impression:  0,
-					Click:       0,
+					Category:    "education",
+					Budget:      20000,
 				},
 				{
 					Title:       "title3 adv2",
@@ -164,8 +192,8 @@ func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 					RedirectUrl: "https://www.varzesh3.com/",
 					BID:         1000,
 					Active:      false,
-					Impression:  0,
-					Click:       0,
+					Category:    "technology",
+					Budget:      20000,
 				},
 			},
 		},
@@ -173,36 +201,41 @@ func (ctrl *AdController) CreateMockData(ctx *gin.Context) {
 
 	pubs := []models.Publisher{
 		{
-			Name:              "pub1",
+			Name:              "technolife",
 			Balance:           0,
 			CommissionPercent: 20,
+			Category:          "technology",
 		},
 		{
-			Name:              "pub2",
+			Name:              "faradars",
 			Balance:           15000,
 			CommissionPercent: 15,
+			Category:          "education",
 		},
 		{
-			Name:              "pub3",
+			Name:              "varzesh3",
 			Balance:           1000,
 			CommissionPercent: 10,
+			Category:          "health",
 		},
 		{
-			Name:              "pub4",
+			Name:              "zoomit",
 			Balance:           0,
 			CommissionPercent: 10,
+			Category:          "technology",
 		},
 		{
-			Name:              "pub5",
+			Name:              "quera",
 			Balance:           0,
 			CommissionPercent: 30,
+			Category:          "education",
 		},
 	}
 
 	ctrl.DB.Create(&advs)
 	ctrl.DB.Create(&pubs)
 
-	ctx.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"advs": &advs,
 		"pubs": &pubs,
 	})

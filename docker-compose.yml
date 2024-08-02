@@ -74,8 +74,8 @@ services:
     ports:
       - 5002:5002
     environment:
-      - EVENTSERVERHOST=${HOST}
-      - EVENTSERVERPORT=5003
+      - EVENTSERVERHOST=${HOST}:5003
+      - PANELHOST=${HOST}:8080
     depends_on:
       - panel-webserver
     restart: unless-stopped
