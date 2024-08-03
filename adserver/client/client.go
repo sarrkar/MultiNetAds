@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"sort"
 	"strings"
@@ -120,6 +121,17 @@ func GetBestAds(publisherID uint, title string) ([]models.Ad, models.Publisher) 
 	}
 	log.Printf("Publisher ID: %d, Category: %s\n", publisher.ID, publisher.Category)
 
+	if rand.Float64() < 0.1 {
+		for _, ad := range ads {
+			if ad.Click == 0 || ad.Impression < 5 {
+				results = append(results, ad)
+			}
+		}
+		if len(results) > 0 {
+			return results, *publisher
+		}
+	}
+
 	titleTokens := strings.Split(title, " ")
 
 	for _, ad := range ads {
@@ -139,6 +151,10 @@ func GetBestAds(publisherID uint, title string) ([]models.Ad, models.Publisher) 
 			log.Printf("Matched Ad ID: %d, Category: %s\n", ad.ID, ad.Category)
 			results = append(results, ad)
 		}
+	}
+
+	if len(results) == 0 {
+		results = append(results, ads[0])
 	}
 
 	return results, *publisher
