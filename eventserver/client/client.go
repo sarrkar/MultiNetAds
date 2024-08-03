@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -20,7 +19,7 @@ type Client interface {
 type HttpClient struct{}
 
 func (h HttpClient) AddClick(adID, advID, pubID string) {
-	fmt.Println("add click")
+	log.Printf("add click %s %s %s \n", adID, advID, pubID)
 	resp, err := http.Get(config.Config().Client.PanelApi + "/inc_click/" + adID + "/" + advID + "/" + pubID)
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +28,7 @@ func (h HttpClient) AddClick(adID, advID, pubID string) {
 }
 
 func (h HttpClient) AddImperession(adID, advID, pubID string) {
-	fmt.Println("add impression")
+	log.Printf("add impression %s %s %s \n", adID, advID, pubID)
 	resp, err := http.Get(config.Config().Client.PanelApi + "/inc_impression/" + adID + "/" + advID + "/" + pubID)
 	if err != nil {
 		log.Fatal(err)
@@ -56,7 +55,7 @@ type KafkaMessage struct {
 }
 
 func (c KafkaClient) AddClick(adID, advID, pubID string) {
-	fmt.Println("add click KAFKA")
+	log.Printf("add click KAFKA %s %s %s \n", adID, advID, pubID)
 	adIDi, _ := strconv.Atoi(adID)
 	advIDi, _ := strconv.Atoi(advID)
 	pubIDi, _ := strconv.Atoi(pubID)
@@ -70,7 +69,7 @@ func (c KafkaClient) AddClick(adID, advID, pubID string) {
 }
 
 func (c KafkaClient) AddImperession(adID, advID, pubID string) {
-	fmt.Println("add impression KAFKA")
+	log.Printf("add impression KAFKA %s %s %s \n", adID, advID, pubID)
 	adIDi, _ := strconv.Atoi(adID)
 	advIDi, _ := strconv.Atoi(advID)
 	pubIDi, _ := strconv.Atoi(pubID)
