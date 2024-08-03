@@ -18,10 +18,9 @@ type serverConfig struct {
 }
 
 type clientConfig struct {
-	PanelApi     string
-	PublisherApi string
-	Period       time.Duration
-	Retry        time.Duration
+	PanelApi string
+	Period   time.Duration
+	Retry    time.Duration
 }
 
 var cfg *config
@@ -38,10 +37,9 @@ func Config() *config {
 					OTLlength:              10,
 				},
 				Client: clientConfig{
-					PanelApi:     "http://panel-webserver:9001/api/all_ads",
-					PublisherApi: "http://panel-webserver:9001/api/all_publishers",
-					Period:       1 * time.Minute,
-					Retry:        5 * time.Second,
+					PanelApi: "http://panel-webserver:9001/api",
+					Period:   1 * time.Minute,
+					Retry:    5 * time.Second,
 				},
 			}
 		} else {
@@ -53,10 +51,9 @@ func Config() *config {
 					OTLlength:              10,
 				},
 				Client: clientConfig{
-					PanelApi:     "http://localhost:5001/api/all_ads",
-					PublisherApi: "http://localhost:5001/api/all_publishers",
-					Period:       1 * time.Minute,
-					Retry:        5 * time.Second,
+					PanelApi: "http://localhost:8080/api",
+					Period:   1 * time.Minute,
+					Retry:    5 * time.Second,
 				},
 			}
 		}

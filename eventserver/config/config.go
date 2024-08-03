@@ -39,7 +39,7 @@ func Config() *config {
 					RunMode: "debug",
 				},
 				Client: clientConfig{
-					PanelApi: "http://localhost:5001/api",
+					PanelApi: "http://localhost:8080/api",
 					KafkaUrl: "localhost:29092",
 				},
 			}

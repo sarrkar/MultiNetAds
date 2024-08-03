@@ -6,7 +6,6 @@ import (
 )
 
 func main() {
-	go client.UpdateAdsCache()
-	go client.UpdatePublishersCache()
+	go client.UpdateCache()
 	api.InitServer()
 }
