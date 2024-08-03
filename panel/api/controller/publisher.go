@@ -33,15 +33,15 @@ func (ctrl PublisherController) Index(c *gin.Context) {
 
 func (ctrl PublisherController) Login(c *gin.Context) {
 	name := c.PostForm("name")
-	commissionPercent, err := strconv.Atoi(c.PostForm("commission_percent"))
-	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
-		return
-	}
-	if commissionPercent <= 0 || commissionPercent >= 100 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid commissionPercent value"})
-		return
-	}
+	// commissionPercent, err := strconv.Atoi(c.PostForm("commission_percent"))
+	// if err != nil {
+	// 	c.AbortWithError(http.StatusBadRequest, err)
+	// 	return
+	// }
+	// if commissionPercent <= 0 || commissionPercent >= 100 {
+	// 	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid commissionPercent value"})
+	// 	return
+	// }
 
 	category := c.PostForm("category")
 	customCategory := c.PostForm("custom_category")
@@ -52,7 +52,7 @@ func (ctrl PublisherController) Login(c *gin.Context) {
 	var publisher models.Publisher
 	if result := ctrl.DB.Where(&models.Publisher{Name: name}).First(&publisher); result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
-			publisher = models.Publisher{Name: name, CommissionPercent: commissionPercent, Category: category}
+			publisher = models.Publisher{Name: name, CommissionPercent: 20, Category: category}
 			ctrl.DB.Create(&publisher)
 		} else {
 			c.AbortWithError(http.StatusInternalServerError, result.Error)
