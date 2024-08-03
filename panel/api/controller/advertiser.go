@@ -164,3 +164,24 @@ func (ctrl AdvertiserController) CreateAd(c *gin.Context) {
 
 	c.Redirect(http.StatusFound, fmt.Sprintf("/advertiser/%d", advertiser.ID))
 }
+
+func (ctrl AdvertiserController) ToggleAdStatus(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("advertiser_id"))
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	adId := c.Param("ad_id")
+	var ad models.Ad
+
+	if result := ctrl.DB.Find(&ad, adId); result.Error != nil {
+		c.AbortWithError(http.StatusNotFound, result.Error)
+		return
+	}
+
+	ad.Active = !ad.Active
+	ctrl.DB.Save(&ad)
+
+	c.Redirect(http.StatusFound, fmt.Sprintf("/advertiser/%d", id))
+}

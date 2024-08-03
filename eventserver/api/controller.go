@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sarrkar/chan-ta-net/common/helper"
 	"github.com/sarrkar/chan-ta-net/eventserver/client"
-	"github.com/sarrkar/chan-ta-net/eventserver/helper"
 )
 
 var set helper.Set = helper.NewSet()

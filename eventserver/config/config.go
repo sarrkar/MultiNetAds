@@ -28,7 +28,7 @@ func Config() *config {
 					RunMode: "release",
 				},
 				Client: clientConfig{
-					PanelApi: "http://panel-webserver:9001/api/ad",
+					PanelApi: "http://panel-webserver:9001/api",
 					KafkaUrl: "kafka:9092",
 				},
 			}
@@ -39,7 +39,7 @@ func Config() *config {
 					RunMode: "debug",
 				},
 				Client: clientConfig{
-					PanelApi: "http://localhost:5001/api/ad",
+					PanelApi: "http://localhost:5001/api",
 					KafkaUrl: "localhost:29092",
 				},
 			}

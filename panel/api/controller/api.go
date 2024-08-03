@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +20,7 @@ func NewApiController() *ApiController {
 	}
 }
 
-func (ctrl *ApiController) GetAds(c *gin.Context) {
+func (ctrl ApiController) GetAds(c *gin.Context) {
 	var ads []models.Ad
 
 	if result := ctrl.DB.Where(&models.Ad{Active: true}).Where("budget - click * bid > ?", 0).Find(&ads); result.Error != nil {
@@ -31,7 +31,7 @@ func (ctrl *ApiController) GetAds(c *gin.Context) {
 	c.JSON(http.StatusOK, &ads)
 }
 
-func (ctrl *ApiController) GetPubs(c *gin.Context) {
+func (ctrl ApiController) GetPubs(c *gin.Context) {
 	var publishers []*models.Publisher
 	if result := ctrl.DB.Find(&publishers); result.Error != nil {
 		c.AbortWithError(http.StatusBadRequest, result.Error)
@@ -40,7 +40,7 @@ func (ctrl *ApiController) GetPubs(c *gin.Context) {
 	c.JSON(http.StatusOK, publishers)
 }
 
-func (ctrl *ApiController) GetAdvs(c *gin.Context) {
+func (ctrl ApiController) GetAdvs(c *gin.Context) {
 	var advertisers []*models.Advertiser
 	if result := ctrl.DB.Find(&advertisers); result.Error != nil {
 		c.AbortWithError(http.StatusBadRequest, result.Error)
@@ -49,11 +49,13 @@ func (ctrl *ApiController) GetAdvs(c *gin.Context) {
 	c.JSON(http.StatusOK, advertisers)
 }
 
-func (ctrl *ApiController) IncImpression(c *gin.Context) {
+func (ctrl ApiController) IncImpression(c *gin.Context) {
 	adId := c.Param("ad_id")
+	advId := c.Param("adv_id")
 	pubId := c.Param("pub_id")
 	var ad models.Ad
 	var pub models.Publisher
+	log.Printf("impression %s %s %s \n", adId, advId, pubId)
 
 	if result := ctrl.DB.First(&ad, adId); result.Error != nil {
 		c.AbortWithError(http.StatusNotFound, result.Error)
@@ -70,14 +72,14 @@ func (ctrl *ApiController) IncImpression(c *gin.Context) {
 	pub.Impression++
 	ctrl.DB.Save(&pub)
 
-	c.JSON(http.StatusOK, &ad)
+	c.JSON(http.StatusOK, nil)
 }
 
-func (ctrl *ApiController) IncClick(c *gin.Context) {
+func (ctrl ApiController) IncClick(c *gin.Context) {
 	adId := c.Param("ad_id")
 	advId := c.Param("adv_id")
 	pubId := c.Param("pub_id")
-	fmt.Printf("click %s %s %s", adId, advId, pubId)
+	log.Printf("click %s %s %s \n", adId, advId, pubId)
 
 	var ad models.Ad
 	var adv models.Advertiser
@@ -106,25 +108,10 @@ func (ctrl *ApiController) IncClick(c *gin.Context) {
 	pub.Click++
 	ctrl.DB.Save(&pub)
 
-	c.Redirect(http.StatusMovedPermanently, ad.RedirectUrl)
+	c.JSON(http.StatusOK, nil)
 }
 
-func (ctrl *ApiController) ToggleAdStatus(c *gin.Context) {
-	adId := c.Param("ad_id")
-	var ad models.Ad
-
-	if result := ctrl.DB.Find(&ad, adId); result.Error != nil {
-		c.AbortWithError(http.StatusNotFound, result.Error)
-		return
-	}
-
-	ad.Active = !ad.Active
-	ctrl.DB.Save(&ad)
-
-	c.JSON(http.StatusOK, gin.H{"status": "success"})
-}
-
-func (ctrl *ApiController) CreateMockData(c *gin.Context) {
+func (ctrl ApiController) CreateMockData(c *gin.Context) {
 
 	ctrl.DB.Exec("DELETE FROM ads")
 	ctrl.DB.Exec("DELETE FROM advertisers")

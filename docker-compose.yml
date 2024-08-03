@@ -61,8 +61,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_DB=${POSTGRES_DB}
-      - ADSERVERHOST=${HOST}
-      - ADSERVERPORT=5002
+      - ADSERVERHOST=${HOST}:5002
+      - PANELHOST=${HOST}:8080
     depends_on:
       - database
     restart: unless-stopped
@@ -72,10 +72,9 @@ services:
       context: .
       dockerfile: ./adserver/Dockerfile
     ports:
-      - 5002:5002
+      - 5002:9002
     environment:
       - EVENTSERVERHOST=${HOST}:5003
-      - PANELHOST=${HOST}:8080
     depends_on:
       - panel-webserver
     restart: unless-stopped

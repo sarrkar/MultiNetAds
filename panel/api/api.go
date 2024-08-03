@@ -37,6 +37,8 @@ func RegisterRoutes(r *gin.Engine) {
 		adv.GET("/:advertiser_id", ctrl.Home)
 		adv.POST("/:advertiser_id/add_credit", ctrl.AddCredit)
 		adv.POST("/:advertiser_id/ad_create", ctrl.CreateAd)
+		adv.POST("/:advertiser_id/toggle_status/:ad_id", ctrl.ToggleAdStatus)
+
 	}
 
 	pub := r.Group("/publisher")
@@ -57,7 +59,6 @@ func RegisterRoutes(r *gin.Engine) {
 		api.GET("/inc_impression/:ad_id/:adv_id/:pub_id", ctrl.IncImpression)
 		api.GET("/inc_click/:ad_id/:adv_id/:pub_id", ctrl.IncClick)
 		api.GET("/create_mock", ctrl.CreateMockData)
-		api.POST("/toggle_status/:ad_id", ctrl.ToggleAdStatus)
 		api.GET("/all_ads", ctrl.GetAds)
 		api.GET("/all_publishers", ctrl.GetPubs)
 		api.GET("/all_advertisers", ctrl.GetAdvs)

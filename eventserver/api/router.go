@@ -27,7 +27,7 @@ func RegisterRoutes(r *gin.Engine) {
 
 	r.GET("/", func(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, gin.H{
-			"status": "OK",
+			"status": "EVENT SERVER OK",
 			"code":   200,
 		})
 	})

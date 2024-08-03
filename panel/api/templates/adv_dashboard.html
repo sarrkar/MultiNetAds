@@ -21,8 +21,8 @@
         <script>
             function CTR(Click, Impression) {
                 if (Impression == 0) return 0;
-                return Click/Impression;
-    
+                return Click / Impression;
+
             }
         </script>
         <table>
@@ -44,7 +44,8 @@
                 {{range .Ads}}
                 <tr>
                     <td>
-                        <a href="{{.RedirectUrl}}" target="_blank"><img src={{.ImageUrl}} alt="ad image" height="100px"><br>{{.Title}}</a>
+                        <a href="{{.RedirectUrl}}" target="_blank"><img src={{.ImageUrl}} alt="ad image"
+                                height="100px"><br>{{.Title}}</a>
                     </td>
                     <td>
                         {{.Category}}
@@ -59,10 +60,10 @@
                         {{.Click}}
                     </td>
                     <td>
-                        <script>document.write(CTR({{.Click}}, {{.Impression}}))</script>
+                        <script>document.write(CTR({{.Click }}, {{.Impression }}).toFixed(2))</script>
                     </td>
                     <td>
-                        <script>document.write({{.BID}}*{{.Click}})</script> تومان
+                        <script>document.write({{.BID }}* {{.Click }})</script> تومان
                     </td>
                     <td>
                         {{.Budget}} تومان
@@ -71,8 +72,9 @@
                         {{if .Active}}فعال{{else}}غیرفعال{{end}}
                     </td>
                     <td>
-                        <button onclick="toggleAdStatus({{.ID}}, {{.Active}})">{{if
-                            .Active}}غیرفعال{{else}}فعال{{end}}</button>
+                        <form action="{{.AdvertiserID}}/toggle_status/{{.ID}}" method="post">
+                            <button>{{if.Active}}غیرفعال{{else}}فعال{{end}}</button>
+                        </form>
                     </td>
                 </tr>
                 {{end}}
@@ -96,7 +98,7 @@
 
             <label for="image_file">آپلود تصویر:</label>
             <input type="file" id="image_file" name="image_file" required>
-    
+
             <label for="category">دسته بندی:</label>
             <select id="category" name="category" required onchange="toggleCustomCategory()">
                 <option value="technology">تکنولوژی</option>
@@ -113,19 +115,6 @@
     </div>
 
     <script>
-
-        function toggleAdStatus(adId, currentStatus) {
-
-            fetch(`${location.origin}/api/toggle_status/${adId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json;charset=UTF-8"
-                },
-            })
-                .then((response) => location.reload())
-                .catch((error) => alert('خطا در تغییر وضعیت تبلیغ'));
-
-        }
 
         function toggleCustomCategory() {
             var categorySelect = document.getElementById("category");

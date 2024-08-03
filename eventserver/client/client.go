@@ -30,7 +30,7 @@ func (h HttpClient) AddClick(adID, advID, pubID string) {
 
 func (h HttpClient) AddImperession(adID, advID, pubID string) {
 	fmt.Println("add impression")
-	resp, err := http.Get(config.Config().Client.PanelApi + "/inc_impression/" + adID)
+	resp, err := http.Get(config.Config().Client.PanelApi + "/inc_impression/" + adID + "/" + advID + "/" + pubID)
 	if err != nil {
 		log.Fatal(err)
 	}

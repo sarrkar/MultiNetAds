@@ -78,9 +78,9 @@ func (c *Consumer) addClick(m KafkaMessage) {
 	c.Lock.Lock()
 	defer c.Lock.Unlock()
 	c.AdsClick[m.AdID]++
-	c.PubsClick[m.AdID]++
+	c.PubsClick[m.PubID]++
 	c.AdvsExpense[m.AdvID] += c.AdsBid[m.AdID]
-	c.PubsIncome[m.AdvID] += c.AdsBid[m.AdID]
+	c.PubsIncome[m.PubID] += c.AdsBid[m.AdID]
 }
 
 func (c *Consumer) GetImpression() {
@@ -106,7 +106,7 @@ func (c *Consumer) addImpression(m KafkaMessage) {
 	c.Lock.Lock()
 	defer c.Lock.Unlock()
 	c.AdsImpression[m.AdID]++
-	c.PubsImpression[m.AdID]++
+	c.PubsImpression[m.PubID]++
 }
 
 func (c *Consumer) GetBidCatch() {
@@ -148,6 +148,8 @@ func (c *Consumer) Save() {
 	}
 	for i := 0; i < len(pubs); i++ {
 		pubs[i].Balance += c.PubsIncome[pubs[i].ID] * pubs[i].CommissionPercent / 100
+		pubs[i].Click += c.PubsClick[pubs[i].ID]
+		pubs[i].Impression += c.PubsImpression[pubs[i].ID]
 	}
 
 	db.Save(&ads)

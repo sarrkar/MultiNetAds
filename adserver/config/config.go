@@ -29,19 +29,18 @@ var cfg *config
 func Config() *config {
 	if cfg == nil {
 		host := os.Getenv("EVENTSERVERHOST")
-		port := os.Getenv("EVENTSERVERPORT")
 		if os.Getenv("APP_ENV") == "docker" {
 			cfg = &config{
 				Server: serverConfig{
-					Port:                   "5002",
-					RunMode:                "debug",
-					EventSeverExternalHost: host + ":" + port,
+					Port:                   "9002",
+					RunMode:                "release",
+					EventSeverExternalHost: host,
 					OTLlength:              10,
 				},
 				Client: clientConfig{
-					PanelApi:     "http://panel-webserver:9001/api/ad/all_ads",
-					PublisherApi: "http://panel-webserver:9001/api/publisher/all_publishers",
-					Period:       10 * time.Minute,
+					PanelApi:     "http://panel-webserver:9001/api/all_ads",
+					PublisherApi: "http://panel-webserver:9001/api/all_publishers",
+					Period:       1 * time.Minute,
 					Retry:        5 * time.Second,
 				},
 			}
@@ -54,8 +53,8 @@ func Config() *config {
 					OTLlength:              10,
 				},
 				Client: clientConfig{
-					PanelApi:     "http://localhost:5001/api/ad/all_ads",
-					PublisherApi: "http://localhost:5001/api/publisher/all_publishers",
+					PanelApi:     "http://localhost:5001/api/all_ads",
+					PublisherApi: "http://localhost:5001/api/all_publishers",
 					Period:       1 * time.Minute,
 					Retry:        5 * time.Second,
 				},

@@ -38,7 +38,7 @@ func GetAd(ctx *gin.Context) {
 	}
 
 	sort.Slice(ads, func(i, j int) bool {
-		if ads[i].Click != 0 && ads[j].Click != 0 {
+		if ads[i].Impression != 0 && ads[j].Impression != 0 {
 			return ads[i].BID*(ads[i].Click/ads[i].Impression) > ads[j].BID*(ads[j].Click/ads[j].Impression)
 		}
 		return ads[i].BID > ads[j].BID
